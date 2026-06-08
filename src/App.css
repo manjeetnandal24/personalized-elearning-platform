@@ -236,3 +236,193 @@ footer {
 .progress-card strong {
   color: #2563eb;
 }
+
+.logo-link {
+  text-decoration: none;
+}
+
+.nav-link {
+  color: #334155;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.nav-link:hover {
+  color: #2563eb;
+}
+
+.active-link {
+  color: #2563eb;
+}
+
+.page-section {
+  min-height: 75vh;
+  padding: 70px 8%;
+  background-color: #f8fafc;
+}
+
+.form-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 75vh;
+  padding: 60px 20px;
+  background-color: #eff6ff;
+}
+
+.form-card {
+  width: 100%;
+  max-width: 440px;
+  padding: 35px;
+  border: 1px solid #dbeafe;
+  border-radius: 16px;
+  background-color: white;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+}
+
+.form-card h1 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: #0f172a;
+}
+
+.form-card > p {
+  margin-bottom: 28px;
+  color: #64748b;
+}
+
+.form-card form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-card label {
+  margin-bottom: 8px;
+  color: #334155;
+  font-weight: 600;
+}
+
+.form-card input {
+  margin-bottom: 20px;
+  padding: 13px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 15px;
+  outline: none;
+}
+
+.form-card input:focus {
+  border-color: #2563eb;
+}
+
+.form-button {
+  width: 100%;
+}
+
+.dashboard-page {
+  min-height: 75vh;
+  padding: 70px 8%;
+  background-color: #f8fafc;
+}
+
+.dashboard-heading {
+  margin-bottom: 35px;
+}
+
+.dashboard-heading h1 {
+  margin: 8px 0;
+  color: #0f172a;
+  font-size: 40px;
+}
+
+.dashboard-heading > p:last-child {
+  color: #64748b;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+  margin-bottom: 30px;
+}
+
+.dashboard-card {
+  padding: 25px;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  background-color: white;
+}
+
+.dashboard-card p {
+  margin-top: 0;
+  color: #64748b;
+}
+
+.dashboard-card h2 {
+  margin-bottom: 0;
+  color: #2563eb;
+  font-size: 36px;
+}
+
+.continue-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+  padding: 30px;
+  border: 1px solid #dbeafe;
+  border-radius: 16px;
+  background-color: #eff6ff;
+}
+
+.continue-card h2 {
+  margin: 8px 0;
+  color: #0f172a;
+}
+
+.continue-card p {
+  color: #64748b;
+}
+
+.not-found-page {
+  min-height: 75vh;
+  padding: 100px 20px;
+  text-align: center;
+  background-color: #f8fafc;
+}
+
+.not-found-page h1 {
+  margin: 0;
+  color: #2563eb;
+  font-size: 90px;
+}
+
+.not-found-page h2 {
+  color: #0f172a;
+  font-size: 32px;
+}
+
+.not-found-page p {
+  margin-bottom: 30px;
+  color: #64748b;
+}
+
+.primary-link {
+  display: inline-block;
+  padding: 13px 22px;
+  border-radius: 8px;
+  background-color: #2563eb;
+  color: white;
+  text-decoration: none;
+}
+
+@media (max-width: 850px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .continue-card {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

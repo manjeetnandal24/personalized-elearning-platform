@@ -1,12 +1,15 @@
 import { useState } from "react";
+import { Route, Routes } from "react-router-dom";
 import "./App.css";
 
 import Navbar from "./components/Navbar";
-import Hero from "./components/Hero";
-import CoursesSection from "./components/CoursesSection";
 import Footer from "./components/Footer";
-import ProgressSection from "./components/ProgressSection";
 
+import HomePage from "./pages/HomePage";
+import CoursesPage from "./pages/CoursesPage";
+import LoginPage from "./pages/LoginPage";
+import DashboardPage from "./pages/DashboardPage";
+import NotFoundPage from "./pages/NotFoundPage";
 
 function App() {
   const [studentName, setStudentName] = useState("Student");
@@ -16,13 +19,25 @@ function App() {
       <Navbar />
 
       <main>
-        <Hero
-          studentName={studentName}
-          onPersonalise={() => setStudentName("Manjeet")}
-        />
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <HomePage
+                studentName={studentName}
+                onPersonalise={() => setStudentName("Manjeet")}
+              />
+            }
+          />
 
-        <CoursesSection />
-        <ProgressSection />
+          <Route path="/courses" element={<CoursesPage />} />
+
+          <Route path="/login" element={<LoginPage />} />
+
+          <Route path="/dashboard" element={<DashboardPage />} />
+
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
       </main>
 
       <Footer />
