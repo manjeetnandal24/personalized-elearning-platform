@@ -1,9 +1,12 @@
 import { useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
 
-function LoginPage() {
+function RegisterPage() {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
@@ -14,7 +17,13 @@ function LoginPage() {
     setErrorMessage("");
     setSuccessMessage("");
 
+    const cleanName = name.trim();
     const cleanEmail = email.trim().toLowerCase();
+
+    if (cleanName.length < 2) {
+      setErrorMessage("Name must contain at least 2 characters.");
+      return;
+    }
 
     if (!cleanEmail.includes("@") || !cleanEmail.includes(".")) {
       setErrorMessage("Please enter a valid email address.");
@@ -26,17 +35,27 @@ function LoginPage() {
       return;
     }
 
+    if (password !== confirmPassword) {
+      setErrorMessage("Passwords do not match.");
+      return;
+    }
+
     setSuccessMessage(
-      `Login form submitted for ${cleanEmail}. Backend authentication will be added later.`,
+      `Account created successfully for ${cleanName}. Backend connection will be added later.`,
     );
+
+    setName("");
+    setEmail("");
+    setPassword("");
+    setConfirmPassword("");
   }
 
   return (
     <section className="form-page">
-      <div className="form-card">
-        <h1>Welcome Back</h1>
+      <div className="form-card register-card">
+        <h1>Create Account</h1>
 
-        <p>Login to continue your learning journey.</p>
+        <p>Register to start learning and tracking your progress.</p>
 
         {errorMessage && (
           <div className="form-message error-message">{errorMessage}</div>
@@ -47,10 +66,22 @@ function LoginPage() {
         )}
 
         <form onSubmit={handleSubmit}>
-          <label htmlFor="login-email">Email address</label>
+          <label htmlFor="name">Full name</label>
 
           <input
-            id="login-email"
+            id="name"
+            type="text"
+            placeholder="Enter your full name"
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+            autoComplete="name"
+            required
+          />
+
+          <label htmlFor="register-email">Email address</label>
+
+          <input
+            id="register-email"
             type="email"
             placeholder="Enter your email"
             value={email}
@@ -59,15 +90,27 @@ function LoginPage() {
             required
           />
 
-          <label htmlFor="login-password">Password</label>
+          <label htmlFor="register-password">Password</label>
 
           <input
-            id="login-password"
+            id="register-password"
             type={showPassword ? "text" : "password"}
-            placeholder="Enter your password"
+            placeholder="Enter at least 8 characters"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
-            autoComplete="current-password"
+            autoComplete="new-password"
+            required
+          />
+
+          <label htmlFor="confirm-password">Confirm password</label>
+
+          <input
+            id="confirm-password"
+            type={showPassword ? "text" : "password"}
+            placeholder="Enter your password again"
+            value={confirmPassword}
+            onChange={(event) => setConfirmPassword(event.target.value)}
+            autoComplete="new-password"
             required
           />
 
@@ -78,20 +121,20 @@ function LoginPage() {
               onChange={(event) => setShowPassword(event.target.checked)}
             />
 
-            <span>Show password</span>
+            <span>Show passwords</span>
           </label>
 
           <button type="submit" className="primary-button form-button">
-            Login
+            Create Account
           </button>
         </form>
 
         <p className="form-switch-text">
-          Don&apos;t have an account? <Link to="/register">Create account</Link>
+          Already have an account? <Link to="/login">Login</Link>
         </p>
       </div>
     </section>
   );
 }
 
-export default LoginPage;
+export default RegisterPage;

@@ -10,6 +10,8 @@ import CoursesPage from "./pages/CoursesPage";
 import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
 import NotFoundPage from "./pages/NotFoundPage";
+import RegisterPage from "./pages/RegisterPage";
+
 
 function App() {
   const [studentName, setStudentName] = useState("Student");
@@ -33,6 +35,8 @@ function App() {
           <Route path="/courses" element={<CoursesPage />} />
 
           <Route path="/login" element={<LoginPage />} />
+
+          <Route path="/register" element={<RegisterPage />} />
 
           <Route path="/dashboard" element={<DashboardPage />} />
 

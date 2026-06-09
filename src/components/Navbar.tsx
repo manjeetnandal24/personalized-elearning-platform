@@ -10,6 +10,7 @@ function Navbar() {
       <nav>
         <NavLink
           to="/"
+          end
           className={({ isActive }) =>
             isActive ? "nav-link active-link" : "nav-link"
           }
@@ -36,9 +37,15 @@ function Navbar() {
         </NavLink>
       </nav>
 
-      <NavLink to="/login" className="login-button">
-        Login
-      </NavLink>
+      <div className="auth-actions">
+        <NavLink to="/login" className="text-link-button">
+          Login
+        </NavLink>
+
+        <NavLink to="/register" className="login-button">
+          Register
+        </NavLink>
+      </div>
     </header>
   );
 }
