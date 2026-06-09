@@ -11,6 +11,7 @@ import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import RegisterPage from "./pages/RegisterPage";
+import CourseDetailsPage from "./pages/CourseDetailsPage";
 
 
 function App() {
@@ -33,6 +34,8 @@ function App() {
           />
 
           <Route path="/courses" element={<CoursesPage />} />
+
+          <Route path="/courses/:courseId" element={<CourseDetailsPage />} />
 
           <Route path="/login" element={<LoginPage />} />
 
