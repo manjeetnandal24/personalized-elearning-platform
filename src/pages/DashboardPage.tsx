@@ -1,3 +1,4 @@
+import BackendStatus from "../components/BackendStatus";
 function DashboardPage() {
   return (
     <section className="dashboard-page">
@@ -6,6 +7,8 @@ function DashboardPage() {
         <h1>Welcome back, Manjeet</h1>
         <p>Continue learning and monitor your progress.</p>
       </div>
+
+      <BackendStatus />
 
       <div className="dashboard-grid">
         <div className="dashboard-card">

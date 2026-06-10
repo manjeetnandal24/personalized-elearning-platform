@@ -855,3 +855,44 @@ footer {
     flex-direction: column;
   }
 }
+.backend-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: fit-content;
+  margin-bottom: 28px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.backend-status p {
+  margin: 0;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.connected-status {
+  border: 1px solid #bbf7d0;
+  background-color: #f0fdf4;
+  color: #15803d;
+}
+
+.connected-status .status-dot {
+  background-color: #22c55e;
+}
+
+.disconnected-status {
+  border: 1px solid #fecaca;
+  background-color: #fef2f2;
+  color: #b91c1c;
+}
+
+.disconnected-status .status-dot {
+  background-color: #ef4444;
+}
