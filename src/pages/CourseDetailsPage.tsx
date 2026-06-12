@@ -1,23 +1,64 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
+import { fetchCourseById } from "../api/courseApi";
 import LessonItem from "../components/LessonItem";
-import { courses } from "../data/courses";
+import type { Course } from "../types/course";
 
 function CourseDetailsPage() {
   const { courseId } = useParams<{ courseId: string }>();
 
-  const course = courses.find(
-    (currentCourse) => currentCourse.id === Number(courseId),
-  );
-
+  const [course, setCourse] = useState<Course | null>(null);
   const [completedLessonIds, setCompletedLessonIds] = useState<number[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  if (!course) {
+  useEffect(() => {
+    async function loadCourseDetails() {
+      if (!courseId) {
+        setErrorMessage("Invalid course ID.");
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        const courseData = await fetchCourseById(courseId);
+        setCourse(courseData);
+      } catch {
+        setErrorMessage("Course not found or backend is not connected.");
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    loadCourseDetails();
+  }, [courseId]);
+
+  function toggleLessonCompletion(lessonId: number) {
+    setCompletedLessonIds((currentIds) => {
+      const lessonIsCompleted = currentIds.includes(lessonId);
+
+      if (lessonIsCompleted) {
+        return currentIds.filter((id) => id !== lessonId);
+      }
+
+      return [...currentIds, lessonId];
+    });
+  }
+
+  if (isLoading) {
+    return (
+      <section className="course-details-page">
+        <p className="status-text">Loading course details...</p>
+      </section>
+    );
+  }
+
+  if (errorMessage || !course) {
     return (
       <section className="course-not-found">
         <h1>Course not found</h1>
-        <p>The requested course does not exist.</p>
+        <p>{errorMessage || "The requested course does not exist."}</p>
 
         <Link to="/courses" className="primary-link">
           View All Courses
@@ -33,18 +74,6 @@ function CourseDetailsPage() {
     totalLessons === 0
       ? 0
       : Math.round((completedLessons / totalLessons) * 100);
-
-  function toggleLessonCompletion(lessonId: number) {
-    setCompletedLessonIds((currentIds) => {
-      const lessonIsCompleted = currentIds.includes(lessonId);
-
-      if (lessonIsCompleted) {
-        return currentIds.filter((id) => id !== lessonId);
-      }
-
-      return [...currentIds, lessonId];
-    });
-  }
 
   return (
     <section className="course-details-page">

@@ -1,4 +1,4 @@
-import type { Lesson } from "../data/courses";
+import type { Lesson } from "../types/course";
 
 type LessonItemProps = {
   lesson: Lesson;
