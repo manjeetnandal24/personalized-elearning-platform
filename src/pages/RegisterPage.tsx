@@ -1,7 +1,13 @@
 import { useState, type FormEvent } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
+import { registerUser } from "../api/authApi";
+import { useAuth } from "../context/AuthContext";
 
 function RegisterPage() {
+  const navigate = useNavigate();
+  const { login } = useAuth();
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -9,13 +15,12 @@ function RegisterPage() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     setErrorMessage("");
-    setSuccessMessage("");
 
     const cleanName = name.trim();
     const cleanEmail = email.trim().toLowerCase();
@@ -40,14 +45,24 @@ function RegisterPage() {
       return;
     }
 
-    setSuccessMessage(
-      `Account created successfully for ${cleanName}. Backend connection will be added later.`,
-    );
+    try {
+      setIsSubmitting(true);
 
-    setName("");
-    setEmail("");
-    setPassword("");
-    setConfirmPassword("");
+      const authData = await registerUser({
+        name: cleanName,
+        email: cleanEmail,
+        password,
+      });
+
+      login(authData);
+      navigate("/dashboard");
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error ? error.message : "Registration failed.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -59,10 +74,6 @@ function RegisterPage() {
 
         {errorMessage && (
           <div className="form-message error-message">{errorMessage}</div>
-        )}
-
-        {successMessage && (
-          <div className="form-message success-message">{successMessage}</div>
         )}
 
         <form onSubmit={handleSubmit}>
@@ -124,8 +135,12 @@ function RegisterPage() {
             <span>Show passwords</span>
           </label>
 
-          <button type="submit" className="primary-button form-button">
-            Create Account
+          <button
+            type="submit"
+            className="primary-button form-button"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Creating account..." : "Create Account"}
           </button>
         </form>
 

@@ -1,6 +1,10 @@
 import { NavLink } from "react-router-dom";
 
+import { useAuth } from "../context/AuthContext";
+
 function Navbar() {
+  const { user, isAuthenticated, logout } = useAuth();
+
   return (
     <header className="navbar">
       <NavLink to="/" className="logo-link">
@@ -37,15 +41,25 @@ function Navbar() {
         </NavLink>
       </nav>
 
-      <div className="auth-actions">
-        <NavLink to="/login" className="text-link-button">
-          Login
-        </NavLink>
+      {isAuthenticated && user ? (
+        <div className="auth-actions">
+          <span className="welcome-text">Hi, {user.name}</span>
 
-        <NavLink to="/register" className="login-button">
-          Register
-        </NavLink>
-      </div>
+          <button type="button" className="logout-button" onClick={logout}>
+            Logout
+          </button>
+        </div>
+      ) : (
+        <div className="auth-actions">
+          <NavLink to="/login" className="text-link-button">
+            Login
+          </NavLink>
+
+          <NavLink to="/register" className="login-button">
+            Register
+          </NavLink>
+        </div>
+      )}
     </header>
   );
 }
