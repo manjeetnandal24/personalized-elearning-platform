@@ -31,14 +31,16 @@ function Navbar() {
           Courses
         </NavLink>
 
-        <NavLink
-          to="/dashboard"
-          className={({ isActive }) =>
-            isActive ? "nav-link active-link" : "nav-link"
-          }
-        >
-          Dashboard
-        </NavLink>
+        {isAuthenticated && (
+          <NavLink
+            to="/dashboard"
+            className={({ isActive }) =>
+              isActive ? "nav-link active-link" : "nav-link"
+            }
+          >
+            Dashboard
+          </NavLink>
+        )}
       </nav>
 
       {isAuthenticated && user ? (

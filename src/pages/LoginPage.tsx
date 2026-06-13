@@ -1,12 +1,16 @@
 import { useState, type FormEvent } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { loginUser } from "../api/authApi";
 import { useAuth } from "../context/AuthContext";
 
 function LoginPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useAuth();
+  const redirectPath =
+  (location.state as { from?: { pathname?: string } } | null)?.from
+    ?.pathname || "/dashboard";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -41,7 +45,7 @@ function LoginPage() {
       });
 
       login(authData);
-      navigate("/dashboard");
+      navigate(redirectPath);
     } catch (error) {
       setErrorMessage(
         error instanceof Error ? error.message : "Login failed.",

@@ -4,6 +4,7 @@ type LessonItemProps = {
   lesson: Lesson;
   lessonNumber: number;
   isCompleted: boolean;
+  isDisabled?: boolean;
   onToggleComplete: (lessonId: number) => void;
 };
 
@@ -11,15 +12,12 @@ function LessonItem({
   lesson,
   lessonNumber,
   isCompleted,
+  isDisabled = false,
   onToggleComplete,
 }: LessonItemProps) {
   return (
-    <article
-      className={`lesson-item ${isCompleted ? "completed-lesson" : ""}`}
-    >
-      <div className="lesson-number">
-        {isCompleted ? "✓" : lessonNumber}
-      </div>
+    <article className={`lesson-item ${isCompleted ? "completed-lesson" : ""}`}>
+      <div className="lesson-number">{isCompleted ? "✓" : lessonNumber}</div>
 
       <div className="lesson-information">
         <div className="lesson-title-row">
@@ -32,14 +30,15 @@ function LessonItem({
 
       <button
         type="button"
-        className={
-          isCompleted
-            ? "lesson-button completed-button"
-            : "lesson-button"
-        }
+        className={isCompleted ? "lesson-button completed-button" : "lesson-button"}
         onClick={() => onToggleComplete(lesson.id)}
+        disabled={isDisabled}
       >
-        {isCompleted ? "Completed" : "Mark Complete"}
+        {isDisabled
+          ? "Login Required"
+          : isCompleted
+            ? "Completed"
+            : "Mark Complete"}
       </button>
     </article>
   );

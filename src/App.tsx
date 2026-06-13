@@ -2,17 +2,18 @@ import { useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
 
-import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import Navbar from "./components/Navbar";
+import ProtectedRoute from "./components/ProtectedRoute";
+import PublicOnlyRoute from "./components/PublicOnlyRoute";
 
-import HomePage from "./pages/HomePage";
+import CourseDetailsPage from "./pages/CourseDetailsPage";
 import CoursesPage from "./pages/CoursesPage";
-import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
+import HomePage from "./pages/HomePage";
+import LoginPage from "./pages/LoginPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import RegisterPage from "./pages/RegisterPage";
-import CourseDetailsPage from "./pages/CourseDetailsPage";
-
 
 function App() {
   const [studentName, setStudentName] = useState("Student");
@@ -37,11 +38,14 @@ function App() {
 
           <Route path="/courses/:courseId" element={<CourseDetailsPage />} />
 
-          <Route path="/login" element={<LoginPage />} />
+          <Route element={<PublicOnlyRoute />}>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+          </Route>
 
-          <Route path="/register" element={<RegisterPage />} />
-
-          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route element={<ProtectedRoute />}>
+            <Route path="/dashboard" element={<DashboardPage />} />
+          </Route>
 
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

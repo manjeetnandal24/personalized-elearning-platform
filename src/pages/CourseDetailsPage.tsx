@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-
+import { Link, useParams } from "react-router-dom"
+import { useAuth } from "../context/AuthContext";
 import { fetchCourseById } from "../api/courseApi";
+
 import LessonItem from "../components/LessonItem";
 import type { Course } from "../types/course";
 
 function CourseDetailsPage() {
   const { courseId } = useParams<{ courseId: string }>();
+  const { isAuthenticated } = useAuth();
 
   const [course, setCourse] = useState<Course | null>(null);
   const [completedLessonIds, setCompletedLessonIds] = useState<number[]>([]);
@@ -34,17 +36,21 @@ function CourseDetailsPage() {
     loadCourseDetails();
   }, [courseId]);
 
-  function toggleLessonCompletion(lessonId: number) {
-    setCompletedLessonIds((currentIds) => {
-      const lessonIsCompleted = currentIds.includes(lessonId);
-
-      if (lessonIsCompleted) {
-        return currentIds.filter((id) => id !== lessonId);
-      }
-
-      return [...currentIds, lessonId];
-    });
+ function toggleLessonCompletion(lessonId: number) {
+  if (!isAuthenticated) {
+    return;
   }
+
+  setCompletedLessonIds((currentIds) => {
+    const lessonIsCompleted = currentIds.includes(lessonId);
+
+    if (lessonIsCompleted) {
+      return currentIds.filter((id) => id !== lessonId);
+    }
+
+    return [...currentIds, lessonId];
+  });
+}
 
   if (isLoading) {
     return (
@@ -100,6 +106,24 @@ function CourseDetailsPage() {
         </div>
       </div>
 
+
+      {!isAuthenticated && (
+  <div className="login-required-card">
+    <div>
+      <p className="small-heading">LOGIN REQUIRED</p>
+      <h2>Login to track your lesson progress.</h2>
+      <p>
+        You can view the course content, but progress tracking is available only
+        after login.
+      </p>
+    </div>
+
+    <Link to="/login" className="course-link login-required-link">
+      Login
+    </Link>
+  </div>
+)}
+
       <div className="course-progress-card">
         <div className="progress-heading-row">
           <div>
@@ -135,12 +159,14 @@ function CourseDetailsPage() {
         <div className="lesson-list">
           {course.lessons.map((lesson, index) => (
             <LessonItem
-              key={lesson.id}
-              lesson={lesson}
-              lessonNumber={index + 1}
-              isCompleted={completedLessonIds.includes(lesson.id)}
-              onToggleComplete={toggleLessonCompletion}
-            />
+                 key={lesson.id}
+                 lesson={lesson}
+                 lessonNumber={index + 1}
+                 isCompleted={completedLessonIds.includes(lesson.id)}
+                 isDisabled={!isAuthenticated}
+                 onToggleComplete={toggleLessonCompletion}
+                 />
+                 
           ))}
         </div>
       </div>
