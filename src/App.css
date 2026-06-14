@@ -1090,3 +1090,6 @@ footer {
     grid-template-columns: 1fr;
   }
 }
+.hero-link {
+  margin-top: 20px;
+}

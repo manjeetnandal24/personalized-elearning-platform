@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
 
@@ -16,23 +15,13 @@ import NotFoundPage from "./pages/NotFoundPage";
 import RegisterPage from "./pages/RegisterPage";
 
 function App() {
-  const [studentName, setStudentName] = useState("Student");
-
   return (
     <div className="app">
       <Navbar />
 
       <main>
         <Routes>
-          <Route
-            path="/"
-            element={
-              <HomePage
-                studentName={studentName}
-                onPersonalise={() => setStudentName("Manjeet")}
-              />
-            }
-          />
+          <Route path="/" element={<HomePage />} />
 
           <Route path="/courses" element={<CoursesPage />} />
 

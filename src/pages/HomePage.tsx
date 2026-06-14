@@ -1,19 +1,14 @@
-import Hero from "../components/Hero";
 import CoursesSection from "../components/CoursesSection";
+import Hero from "../components/Hero";
 import ProgressSection from "../components/ProgressSection";
+import { useAuth } from "../context/AuthContext";
 
-type HomePageProps = {
-  studentName: string;
-  onPersonalise: () => void;
-};
+function HomePage() {
+  const { user, isAuthenticated } = useAuth();
 
-function HomePage({ studentName, onPersonalise }: HomePageProps) {
   return (
     <>
-      <Hero
-        studentName={studentName}
-        onPersonalise={onPersonalise}
-      />
+      <Hero userName={user?.name} isAuthenticated={isAuthenticated} />
 
       <CoursesSection />
 
