@@ -13,6 +13,8 @@ import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import RegisterPage from "./pages/RegisterPage";
+import AdminRoute from "./components/AdminRoute";
+import AdminPage from "./pages/AdminPage";
 
 function App() {
   return (
@@ -35,6 +37,10 @@ function App() {
           <Route element={<ProtectedRoute />}>
             <Route path="/dashboard" element={<DashboardPage />} />
           </Route>
+
+          <Route element={<AdminRoute />}>
+              <Route path="/admin" element={<AdminPage />} />
+           </Route>
 
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

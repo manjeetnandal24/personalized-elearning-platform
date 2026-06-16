@@ -1093,3 +1093,79 @@ footer {
 .hero-link {
   margin-top: 20px;
 }
+
+.admin-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 55px 24px;
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  margin-top: 30px;
+}
+
+.admin-form {
+  max-width: none;
+  padding: 28px;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  background-color: #ffffff;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
+}
+
+.admin-form h2 {
+  margin-top: 0;
+  margin-bottom: 22px;
+  color: #0f172a;
+}
+
+.admin-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+  color: #334155;
+  font-weight: 600;
+}
+
+.admin-form input,
+.admin-form textarea,
+.admin-form select {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 46px;
+  padding: 12px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  color: #0f172a;
+  font: inherit;
+  font-weight: 400;
+  background-color: #ffffff;
+}
+
+.admin-form input:focus,
+.admin-form textarea:focus,
+.admin-form select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.admin-form textarea {
+  min-height: 115px;
+  resize: vertical;
+}
+
+.admin-form .primary-button {
+  width: 100%;
+  margin-top: 8px;
+}
+
+@media (max-width: 850px) {
+  .admin-grid {
+    grid-template-columns: 1fr;
+  }
+}

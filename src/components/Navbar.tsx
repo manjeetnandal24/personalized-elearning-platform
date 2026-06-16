@@ -43,6 +43,17 @@ function Navbar() {
         )}
       </nav>
 
+      {user?.role === "ADMIN" && (
+         <NavLink
+             to="/admin"
+             className={({ isActive }) =>
+             isActive ? "nav-link active-link" : "nav-link"
+              }
+              >
+             Admin
+             </NavLink>
+           )}
+
       {isAuthenticated && user ? (
         <div className="auth-actions">
           <span className="welcome-text">Hi, {user.name}</span>
