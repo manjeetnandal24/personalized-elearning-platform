@@ -3,7 +3,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 function PublicOnlyRoute() {
-  const { isAuthenticated, isAuthLoading } = useAuth();
+  const { user, isAuthenticated, isAuthLoading } = useAuth();
 
   if (isAuthLoading) {
     return (
@@ -14,7 +14,9 @@ function PublicOnlyRoute() {
   }
 
   if (isAuthenticated) {
-    return <Navigate to="/dashboard" replace />;
+    const redirectPath = user?.role === "ADMIN" ? "/admin" : "/dashboard";
+
+    return <Navigate to={redirectPath} replace />;
   }
 
   return <Outlet />;

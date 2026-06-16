@@ -12,7 +12,7 @@ import type { Course } from "../types/course";
 
 function CourseDetailsPage() {
   const { courseId } = useParams<{ courseId: string }>();
-  const { isAuthenticated, token } = useAuth();
+  const { isAuthenticated, token, user } = useAuth();
 
   const [course, setCourse] = useState<Course | null>(null);
   const [completedLessonIds, setCompletedLessonIds] = useState<number[]>([]);
@@ -20,6 +20,9 @@ function CourseDetailsPage() {
   const [isProgressLoading, setIsProgressLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [progressMessage, setProgressMessage] = useState("");
+
+  const isAdmin = user?.role === "ADMIN";
+  const canTrackProgress = isAuthenticated && !isAdmin;
 
   useEffect(() => {
     async function loadCourseDetails() {
@@ -44,13 +47,14 @@ function CourseDetailsPage() {
 
   useEffect(() => {
     async function loadSavedProgress() {
-      if (!course || !isAuthenticated || !token) {
+      if (!course || !canTrackProgress || !token) {
         setCompletedLessonIds([]);
         return;
       }
 
       try {
         setIsProgressLoading(true);
+        setProgressMessage("");
 
         const progress = await fetchCourseProgress(course.id, token);
 
@@ -63,10 +67,10 @@ function CourseDetailsPage() {
     }
 
     loadSavedProgress();
-  }, [course, isAuthenticated, token]);
+  }, [course, canTrackProgress, token]);
 
   async function toggleLessonCompletion(lessonId: number) {
-    if (!isAuthenticated || !token) {
+    if (!canTrackProgress || !token) {
       return;
     }
 
@@ -136,6 +140,23 @@ function CourseDetailsPage() {
         </div>
       </div>
 
+      {isAdmin && (
+        <div className="login-required-card">
+          <div>
+            <p className="small-heading">ADMIN VIEW</p>
+            <h2>Progress tracking is hidden for admin accounts.</h2>
+            <p>
+              You can review the course content here. To add courses or lessons,
+              use the Admin Panel.
+            </p>
+          </div>
+
+          <Link to="/admin" className="course-link login-required-link">
+            Admin Panel
+          </Link>
+        </div>
+      )}
+
       {!isAuthenticated && (
         <div className="login-required-card">
           <div>
@@ -153,44 +174,53 @@ function CourseDetailsPage() {
         </div>
       )}
 
-      <div className="course-progress-card">
-        <div className="progress-heading-row">
-          <div>
-            <h2>Course Progress</h2>
-            <p>
-              {completedLessons} of {totalLessons} lessons completed
-            </p>
+      {!isAdmin && (
+        <div className="course-progress-card">
+          <div className="progress-heading-row">
+            <div>
+              <h2>Course Progress</h2>
+              <p>
+                {completedLessons} of {totalLessons} lessons completed
+              </p>
+            </div>
+
+            <strong>{progressPercentage}%</strong>
           </div>
 
-          <strong>{progressPercentage}%</strong>
+          <div className="details-progress-bar">
+            <div
+              className="details-progress-fill"
+              style={{ width: `${progressPercentage}%` }}
+            />
+          </div>
+
+          {isProgressLoading && (
+            <p className="status-text left-status-text">
+              Loading saved progress...
+            </p>
+          )}
+
+          {progressMessage && (
+            <p className="status-text left-status-text">{progressMessage}</p>
+          )}
+
+          {progressPercentage === 100 && (
+            <p className="completion-message">
+              Excellent! You have completed this course.
+            </p>
+          )}
         </div>
-
-        <div className="details-progress-bar">
-          <div
-            className="details-progress-fill"
-            style={{ width: `${progressPercentage}%` }}
-          />
-        </div>
-
-        {isProgressLoading && (
-          <p className="status-text left-status-text">Loading saved progress...</p>
-        )}
-
-        {progressMessage && (
-          <p className="status-text left-status-text">{progressMessage}</p>
-        )}
-
-        {progressPercentage === 100 && (
-          <p className="completion-message">
-            Excellent! You have completed this course.
-          </p>
-        )}
-      </div>
+      )}
 
       <div className="lessons-section">
         <div className="lessons-heading">
           <h2>Course Lessons</h2>
-          <p>Complete lessons to increase your course progress.</p>
+
+          {isAdmin ? (
+            <p>Admin view: review lessons without student progress controls.</p>
+          ) : (
+            <p>Complete lessons to increase your course progress.</p>
+          )}
         </div>
 
         <div className="lesson-list">
@@ -199,9 +229,10 @@ function CourseDetailsPage() {
               key={lesson.id}
               lesson={lesson}
               lessonNumber={index + 1}
-              isCompleted={completedLessonIds.includes(lesson.id)}
-              isDisabled={!isAuthenticated}
-              onToggleComplete={toggleLessonCompletion}
+              isCompleted={!isAdmin && completedLessonIds.includes(lesson.id)}
+              isDisabled={!canTrackProgress}
+disabledLabel={isAdmin ? "Admin View" : "Login Required"}
+onToggleComplete={toggleLessonCompletion}
             />
           ))}
         </div>

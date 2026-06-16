@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 
 import { fetchDashboardData } from "../api/dashboardApi";
 import BackendStatus from "../components/BackendStatus";
@@ -15,8 +15,15 @@ function DashboardPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
 
+  const isAdmin = user?.role === "ADMIN";
+
   useEffect(() => {
     async function loadDashboard() {
+      if (isAdmin) {
+        setIsLoading(false);
+        return;
+      }
+
       if (!token) {
         setErrorMessage("Login token is missing.");
         setIsLoading(false);
@@ -38,7 +45,11 @@ function DashboardPage() {
     }
 
     loadDashboard();
-  }, [token]);
+  }, [token, isAdmin]);
+
+  if (isAdmin) {
+    return <Navigate to="/admin" replace />;
+  }
 
   return (
     <section className="dashboard-page">

@@ -56,6 +56,11 @@ function AdminPage() {
     loadCourses();
   }, [token]);
 
+  const totalLessons = courses.reduce(
+    (total, course) => total + course.lessons.length,
+    0,
+  );
+
   async function handleCreateCourse(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
@@ -121,18 +126,36 @@ function AdminPage() {
 
   return (
     <section className="admin-page">
-      <div className="dashboard-heading">
-        <p className="small-heading">ADMIN PANEL</p>
-        <h1>Course Management</h1>
-        <p>Create courses and add lessons from the admin dashboard.</p>
+      <div className="admin-hero-card">
+        <div>
+          <p className="small-heading">ADMIN PANEL</p>
+          <h1>Course Management</h1>
+          <p>
+            Create courses, add lessons and manage the learning content shown to
+            students.
+          </p>
+        </div>
+
+        <div className="admin-role-badge">
+          <span>{user?.role}</span>
+          <strong>{user?.name}</strong>
+        </div>
       </div>
 
-      <div className="auth-info-card">
-        <div>
-          <p className="small-heading">ADMIN ACCOUNT</p>
-          <h2>{user?.name}</h2>
-          <p>{user?.email}</p>
-          <p>Role: {user?.role}</p>
+      <div className="admin-stats-grid">
+        <div className="dashboard-card">
+          <p>Total Courses</p>
+          <h2>{courses.length}</h2>
+        </div>
+
+        <div className="dashboard-card">
+          <p>Total Lessons</p>
+          <h2>{totalLessons}</h2>
+        </div>
+
+        <div className="dashboard-card">
+          <p>Admin Account</p>
+          <h2>Active</h2>
         </div>
       </div>
 
@@ -142,7 +165,10 @@ function AdminPage() {
 
       <div className="admin-grid">
         <form className="auth-form admin-form" onSubmit={handleCreateCourse}>
-          <h2>Add New Course</h2>
+          <div className="form-heading">
+            <p className="small-heading">CREATE</p>
+            <h2>Add New Course</h2>
+          </div>
 
           <label>
             Course Title
@@ -215,7 +241,10 @@ function AdminPage() {
         </form>
 
         <form className="auth-form admin-form" onSubmit={handleAddLesson}>
-          <h2>Add Lesson</h2>
+          <div className="form-heading">
+            <p className="small-heading">LESSONS</p>
+            <h2>Add Lesson to Course</h2>
+          </div>
 
           <label>
             Select Course
@@ -277,30 +306,38 @@ function AdminPage() {
         </form>
       </div>
 
-      <div className="dashboard-course-list">
+      <div className="admin-course-panel">
         <div className="lessons-heading">
-          <h2>All Courses</h2>
+          <h2>Course Library</h2>
           <p>Courses currently available in the database.</p>
         </div>
 
-        {courses.map((course) => (
-          <Link
-            to={`/courses/${course.id}`}
-            className="dashboard-course-row"
-            key={course.id}
-          >
-            <div className="course-icon">{course.shortName}</div>
+        {courses.length === 0 && !isLoading ? (
+          <div className="empty-dashboard-card">
+            <h2>No courses added yet</h2>
+            <p>Create your first course using the form above.</p>
+          </div>
+        ) : (
+          courses.map((course) => (
+            <Link
+              to={`/courses/${course.id}`}
+              className="dashboard-course-row"
+              key={course.id}
+            >
+              <div className="course-icon">{course.shortName}</div>
 
-            <div className="dashboard-course-info">
-              <h3>{course.title}</h3>
-              <p>
-                {course.level} • {course.lessons.length} lessons
-              </p>
-            </div>
+              <div className="dashboard-course-info">
+                <h3>{course.title}</h3>
+                <p>
+                  {course.level} • {course.lessons.length} lessons • Instructor:{" "}
+                  {course.instructor}
+                </p>
+              </div>
 
-            <strong>View</strong>
-          </Link>
-        ))}
+              <strong>View</strong>
+            </Link>
+          ))
+        )}
       </div>
     </section>
   );

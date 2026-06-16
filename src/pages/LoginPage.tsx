@@ -8,9 +8,8 @@ function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { login } = useAuth();
-  const redirectPath =
-  (location.state as { from?: { pathname?: string } } | null)?.from
-    ?.pathname || "/dashboard";
+  const requestedPath = (location.state as { from?: { pathname?: string } } | null)
+  ?.from?.pathname;
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -45,7 +44,8 @@ function LoginPage() {
       });
 
       login(authData);
-      navigate(redirectPath);
+      const fallbackPath = authData.user.role === "ADMIN" ? "/admin" : "/dashboard";
+      navigate(requestedPath || fallbackPath);
     } catch (error) {
       setErrorMessage(
         error instanceof Error ? error.message : "Login failed.",

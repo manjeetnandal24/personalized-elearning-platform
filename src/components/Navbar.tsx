@@ -5,6 +5,8 @@ import { useAuth } from "../context/AuthContext";
 function Navbar() {
   const { user, isAuthenticated, logout } = useAuth();
 
+  const isAdmin = user?.role === "ADMIN";
+
   return (
     <header className="navbar">
       <NavLink to="/" className="logo-link">
@@ -31,7 +33,7 @@ function Navbar() {
           Courses
         </NavLink>
 
-        {isAuthenticated && (
+        {isAuthenticated && !isAdmin && (
           <NavLink
             to="/dashboard"
             className={({ isActive }) =>
@@ -41,18 +43,18 @@ function Navbar() {
             Dashboard
           </NavLink>
         )}
-      </nav>
 
-      {user?.role === "ADMIN" && (
-         <NavLink
-             to="/admin"
-             className={({ isActive }) =>
-             isActive ? "nav-link active-link" : "nav-link"
-              }
-              >
-             Admin
-             </NavLink>
-           )}
+        {isAuthenticated && isAdmin && (
+          <NavLink
+            to="/admin"
+            className={({ isActive }) =>
+              isActive ? "nav-link active-link" : "nav-link"
+            }
+          >
+            Admin
+          </NavLink>
+        )}
+      </nav>
 
       {isAuthenticated && user ? (
         <div className="auth-actions">

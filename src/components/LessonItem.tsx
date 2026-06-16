@@ -5,6 +5,7 @@ type LessonItemProps = {
   lessonNumber: number;
   isCompleted: boolean;
   isDisabled?: boolean;
+  disabledLabel?: string;
   onToggleComplete: (lessonId: number) => void;
 };
 
@@ -13,6 +14,7 @@ function LessonItem({
   lessonNumber,
   isCompleted,
   isDisabled = false,
+  disabledLabel = "Login Required",
   onToggleComplete,
 }: LessonItemProps) {
   return (
@@ -35,7 +37,7 @@ function LessonItem({
         disabled={isDisabled}
       >
         {isDisabled
-          ? "Login Required"
+          ? disabledLabel
           : isCompleted
             ? "Completed"
             : "Mark Complete"}
