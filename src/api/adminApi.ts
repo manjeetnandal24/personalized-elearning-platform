@@ -17,6 +17,8 @@ type CreateCoursePayload = {
   instructor: string;
 };
 
+export type CourseFormPayload = CreateCoursePayload;
+
 type AddLessonPayload = {
   title: string;
   description: string;
@@ -49,7 +51,7 @@ export async function fetchAdminCourses(token: string): Promise<Course[]> {
 }
 
 export async function createAdminCourse(
-  payload: CreateCoursePayload,
+  payload: CourseFormPayload,
   token: string,
 ): Promise<Course> {
   const response = await fetch(`${API_BASE_URL}/admin/courses`, {
@@ -76,6 +78,50 @@ export async function createAdminCourse(
   return result.data.course;
 }
 
+export async function updateAdminCourse(
+  courseId: number,
+  payload: CourseFormPayload,
+  token: string,
+): Promise<Course> {
+  const response = await fetch(`${API_BASE_URL}/admin/courses/${courseId}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    throw new Error(await getErrorMessage(response));
+  }
+
+  const result: {
+    success: boolean;
+    message: string;
+    data: {
+      course: Course;
+    };
+  } = await response.json();
+
+  return result.data.course;
+}
+
+export async function deleteAdminCourse(courseId: number, token: string) {
+  const response = await fetch(`${API_BASE_URL}/admin/courses/${courseId}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(await getErrorMessage(response));
+  }
+
+  return response.json();
+}
+
 export async function addLessonToCourse(
   courseId: number,
   payload: AddLessonPayload,
@@ -92,6 +138,21 @@ export async function addLessonToCourse(
       body: JSON.stringify(payload),
     },
   );
+
+  if (!response.ok) {
+    throw new Error(await getErrorMessage(response));
+  }
+
+  return response.json();
+}
+
+export async function deleteLessonFromCourse(lessonId: number, token: string) {
+  const response = await fetch(`${API_BASE_URL}/admin/lessons/${lessonId}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
   if (!response.ok) {
     throw new Error(await getErrorMessage(response));

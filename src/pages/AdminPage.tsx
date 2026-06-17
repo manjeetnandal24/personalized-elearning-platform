@@ -4,33 +4,44 @@ import { Link } from "react-router-dom";
 import {
   addLessonToCourse,
   createAdminCourse,
+  deleteAdminCourse,
+  deleteLessonFromCourse,
   fetchAdminCourses,
+  updateAdminCourse,
+  type CourseFormPayload,
 } from "../api/adminApi";
 import { useAuth } from "../context/AuthContext";
 import type { Course } from "../types/course";
+
+const emptyCourseForm: CourseFormPayload = {
+  title: "",
+  description: "",
+  shortName: "",
+  level: "",
+  instructor: "",
+};
+
+const emptyLessonForm = {
+  title: "",
+  description: "",
+  duration: "",
+};
 
 function AdminPage() {
   const { user, token } = useAuth();
 
   const [courses, setCourses] = useState<Course[]>([]);
   const [selectedCourseId, setSelectedCourseId] = useState("");
+  const [editingCourseId, setEditingCourseId] = useState<number | null>(null);
+
   const [isLoading, setIsLoading] = useState(true);
   const [message, setMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  const [courseForm, setCourseForm] = useState({
-    title: "",
-    description: "",
-    shortName: "",
-    level: "",
-    instructor: "",
-  });
+  const [courseForm, setCourseForm] =
+    useState<CourseFormPayload>(emptyCourseForm);
 
-  const [lessonForm, setLessonForm] = useState({
-    title: "",
-    description: "",
-    duration: "",
-  });
+  const [lessonForm, setLessonForm] = useState(emptyLessonForm);
 
   useEffect(() => {
     async function loadCourses() {
@@ -61,7 +72,38 @@ function AdminPage() {
     0,
   );
 
-  async function handleCreateCourse(event: FormEvent<HTMLFormElement>) {
+  function resetCourseForm() {
+    setCourseForm(emptyCourseForm);
+    setEditingCourseId(null);
+  }
+
+  function startEditingCourse(course: Course) {
+    setEditingCourseId(course.id);
+
+    setCourseForm({
+      title: course.title,
+      description: course.description,
+      shortName: course.shortName,
+      level: course.level,
+      instructor: course.instructor,
+    });
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }
+
+  async function refreshCourses() {
+    if (!token) {
+      return;
+    }
+
+    const updatedCourses = await fetchAdminCourses(token);
+    setCourses(updatedCourses);
+  }
+
+  async function handleSaveCourse(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     if (!token) {
@@ -72,23 +114,33 @@ function AdminPage() {
       setMessage("");
       setErrorMessage("");
 
-      const newCourse = await createAdminCourse(courseForm, token);
+      if (editingCourseId) {
+        const updatedCourse = await updateAdminCourse(
+          editingCourseId,
+          courseForm,
+          token,
+        );
 
-      setCourses((currentCourses) => [newCourse, ...currentCourses]);
-      setSelectedCourseId(String(newCourse.id));
+        setCourses((currentCourses) =>
+          currentCourses.map((course) =>
+            course.id === updatedCourse.id ? updatedCourse : course,
+          ),
+        );
 
-      setCourseForm({
-        title: "",
-        description: "",
-        shortName: "",
-        level: "",
-        instructor: "",
-      });
+        setMessage("Course updated successfully.");
+      } else {
+        const newCourse = await createAdminCourse(courseForm, token);
 
-      setMessage("Course created successfully.");
+        setCourses((currentCourses) => [newCourse, ...currentCourses]);
+        setSelectedCourseId(String(newCourse.id));
+
+        setMessage("Course created successfully.");
+      }
+
+      resetCourseForm();
     } catch (error) {
       setErrorMessage(
-        error instanceof Error ? error.message : "Unable to create course.",
+        error instanceof Error ? error.message : "Unable to save course.",
       );
     }
   }
@@ -106,20 +158,80 @@ function AdminPage() {
       setErrorMessage("");
 
       await addLessonToCourse(Number(selectedCourseId), lessonForm, token);
+      await refreshCourses();
 
-      const updatedCourses = await fetchAdminCourses(token);
-      setCourses(updatedCourses);
-
-      setLessonForm({
-        title: "",
-        description: "",
-        duration: "",
-      });
-
+      setLessonForm(emptyLessonForm);
       setMessage("Lesson added successfully.");
     } catch (error) {
       setErrorMessage(
         error instanceof Error ? error.message : "Unable to add lesson.",
+      );
+    }
+  }
+
+  async function handleDeleteCourse(course: Course) {
+    if (!token) {
+      return;
+    }
+
+    const confirmed = window.confirm(
+      `Delete "${course.title}" and all its lessons? This cannot be undone.`,
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      setMessage("");
+      setErrorMessage("");
+
+      await deleteAdminCourse(course.id, token);
+
+      setCourses((currentCourses) =>
+        currentCourses.filter((currentCourse) => currentCourse.id !== course.id),
+      );
+
+      if (selectedCourseId === String(course.id)) {
+        setSelectedCourseId("");
+      }
+
+      if (editingCourseId === course.id) {
+        resetCourseForm();
+      }
+
+      setMessage("Course deleted successfully.");
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error ? error.message : "Unable to delete course.",
+      );
+    }
+  }
+
+  async function handleDeleteLesson(lessonId: number) {
+    if (!token) {
+      return;
+    }
+
+    const confirmed = window.confirm(
+      "Delete this lesson? Student progress for this lesson will also be removed.",
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      setMessage("");
+      setErrorMessage("");
+
+      await deleteLessonFromCourse(lessonId, token);
+      await refreshCourses();
+
+      setMessage("Lesson deleted successfully.");
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error ? error.message : "Unable to delete lesson.",
       );
     }
   }
@@ -131,8 +243,7 @@ function AdminPage() {
           <p className="small-heading">ADMIN PANEL</p>
           <h1>Course Management</h1>
           <p>
-            Create courses, add lessons and manage the learning content shown to
-            students.
+            Create, update and remove learning content shown to students.
           </p>
         </div>
 
@@ -164,10 +275,12 @@ function AdminPage() {
       {isLoading && <p className="status-text">Loading admin courses...</p>}
 
       <div className="admin-grid">
-        <form className="auth-form admin-form" onSubmit={handleCreateCourse}>
+        <form className="auth-form admin-form" onSubmit={handleSaveCourse}>
           <div className="form-heading">
-            <p className="small-heading">CREATE</p>
-            <h2>Add New Course</h2>
+            <p className="small-heading">
+              {editingCourseId ? "EDIT" : "CREATE"}
+            </p>
+            <h2>{editingCourseId ? "Edit Course" : "Add New Course"}</h2>
           </div>
 
           <label>
@@ -236,8 +349,18 @@ function AdminPage() {
           </label>
 
           <button type="submit" className="primary-button">
-            Create Course
+            {editingCourseId ? "Update Course" : "Create Course"}
           </button>
+
+          {editingCourseId && (
+            <button
+              type="button"
+              className="secondary-button full-width-button"
+              onClick={resetCourseForm}
+            >
+              Cancel Edit
+            </button>
+          )}
         </form>
 
         <form className="auth-form admin-form" onSubmit={handleAddLesson}>
@@ -309,7 +432,7 @@ function AdminPage() {
       <div className="admin-course-panel">
         <div className="lessons-heading">
           <h2>Course Library</h2>
-          <p>Courses currently available in the database.</p>
+          <p>Edit courses, delete courses or remove lessons.</p>
         </div>
 
         {courses.length === 0 && !isLoading ? (
@@ -318,25 +441,74 @@ function AdminPage() {
             <p>Create your first course using the form above.</p>
           </div>
         ) : (
-          courses.map((course) => (
-            <Link
-              to={`/courses/${course.id}`}
-              className="dashboard-course-row"
-              key={course.id}
-            >
-              <div className="course-icon">{course.shortName}</div>
+          <div className="admin-course-management-list">
+            {courses.map((course) => (
+              <article className="admin-course-management-card" key={course.id}>
+                <div className="admin-course-card-top">
+                  <div className="course-icon">{course.shortName}</div>
 
-              <div className="dashboard-course-info">
-                <h3>{course.title}</h3>
-                <p>
-                  {course.level} • {course.lessons.length} lessons • Instructor:{" "}
-                  {course.instructor}
+                  <div>
+                    <h3>{course.title}</h3>
+                    <p>
+                      {course.level} • {course.lessons.length} lessons •
+                      Instructor: {course.instructor}
+                    </p>
+                  </div>
+                </div>
+
+                <p className="admin-course-description">
+                  {course.description}
                 </p>
-              </div>
 
-              <strong>View</strong>
-            </Link>
-          ))
+                <div className="admin-action-row">
+                  <Link to={`/courses/${course.id}`} className="secondary-button">
+                    View
+                  </Link>
+
+                  <button
+                    type="button"
+                    className="secondary-button"
+                    onClick={() => startEditingCourse(course)}
+                  >
+                    Edit
+                  </button>
+
+                  <button
+                    type="button"
+                    className="danger-button"
+                    onClick={() => handleDeleteCourse(course)}
+                  >
+                    Delete
+                  </button>
+                </div>
+
+                {course.lessons.length > 0 && (
+                  <div className="admin-lesson-list">
+                    <h4>Lessons</h4>
+
+                    {course.lessons.map((lesson) => (
+                      <div className="admin-lesson-row" key={lesson.id}>
+                        <div>
+                          <strong>
+                            {lesson.position}. {lesson.title}
+                          </strong>
+                          <p>{lesson.duration}</p>
+                        </div>
+
+                        <button
+                          type="button"
+                          className="danger-button small-danger-button"
+                          onClick={() => handleDeleteLesson(lesson.id)}
+                        >
+                          Delete Lesson
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </article>
+            ))}
+          </div>
         )}
       </div>
     </section>
