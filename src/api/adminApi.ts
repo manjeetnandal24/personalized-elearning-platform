@@ -1,4 +1,4 @@
-import type { Course } from "../types/course";
+import type { Course, Lesson } from "../types/course";
 
 const API_BASE_URL = "http://localhost:5000/api";
 
@@ -19,9 +19,10 @@ type CreateCoursePayload = {
 
 export type CourseFormPayload = CreateCoursePayload;
 
-type AddLessonPayload = {
+export type LessonFormPayload = {
   title: string;
   description: string;
+  content: string;
   duration: string;
 };
 
@@ -124,9 +125,9 @@ export async function deleteAdminCourse(courseId: number, token: string) {
 
 export async function addLessonToCourse(
   courseId: number,
-  payload: AddLessonPayload,
+  payload: LessonFormPayload,
   token: string,
-) {
+): Promise<Lesson> {
   const response = await fetch(
     `${API_BASE_URL}/admin/courses/${courseId}/lessons`,
     {
@@ -143,7 +144,44 @@ export async function addLessonToCourse(
     throw new Error(await getErrorMessage(response));
   }
 
-  return response.json();
+  const result: {
+    success: boolean;
+    message: string;
+    data: {
+      lesson: Lesson;
+    };
+  } = await response.json();
+
+  return result.data.lesson;
+}
+
+export async function updateLessonInCourse(
+  lessonId: number,
+  payload: LessonFormPayload,
+  token: string,
+): Promise<Lesson> {
+  const response = await fetch(`${API_BASE_URL}/admin/lessons/${lessonId}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    throw new Error(await getErrorMessage(response));
+  }
+
+  const result: {
+    success: boolean;
+    message: string;
+    data: {
+      lesson: Lesson;
+    };
+  } = await response.json();
+
+  return result.data.lesson;
 }
 
 export async function deleteLessonFromCourse(lessonId: number, token: string) {

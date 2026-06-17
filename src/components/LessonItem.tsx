@@ -28,20 +28,31 @@ function LessonItem({
         </div>
 
         <p>{lesson.description}</p>
-      </div>
 
-      <button
-        type="button"
-        className={isCompleted ? "lesson-button completed-button" : "lesson-button"}
-        onClick={() => onToggleComplete(lesson.id)}
-        disabled={isDisabled}
-      >
-        {isDisabled
-          ? disabledLabel
-          : isCompleted
-            ? "Completed"
-            : "Mark Complete"}
-      </button>
+        {lesson.content && (
+          <div className="lesson-content-box">
+            <h4>Lesson Content</h4>
+            <p>{lesson.content}</p>
+          </div>
+        )}
+
+        <div className="lesson-action-row">
+          <button
+            type="button"
+            className={
+              isCompleted ? "lesson-button completed-button" : "lesson-button"
+            }
+            onClick={() => onToggleComplete(lesson.id)}
+            disabled={isDisabled}
+          >
+            {isDisabled
+              ? disabledLabel
+              : isCompleted
+                ? "Completed"
+                : "Mark Complete"}
+          </button>
+        </div>
+      </div>
     </article>
   );
 }

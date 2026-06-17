@@ -8,10 +8,12 @@ import {
   deleteLessonFromCourse,
   fetchAdminCourses,
   updateAdminCourse,
+  updateLessonInCourse,
   type CourseFormPayload,
+  type LessonFormPayload,
 } from "../api/adminApi";
 import { useAuth } from "../context/AuthContext";
-import type { Course } from "../types/course";
+import type { Course, Lesson } from "../types/course";
 
 const emptyCourseForm: CourseFormPayload = {
   title: "",
@@ -21,9 +23,10 @@ const emptyCourseForm: CourseFormPayload = {
   instructor: "",
 };
 
-const emptyLessonForm = {
+const emptyLessonForm: LessonFormPayload = {
   title: "",
   description: "",
+  content: "",
   duration: "",
 };
 
@@ -33,6 +36,7 @@ function AdminPage() {
   const [courses, setCourses] = useState<Course[]>([]);
   const [selectedCourseId, setSelectedCourseId] = useState("");
   const [editingCourseId, setEditingCourseId] = useState<number | null>(null);
+  const [editingLessonId, setEditingLessonId] = useState<number | null>(null);
 
   const [isLoading, setIsLoading] = useState(true);
   const [message, setMessage] = useState("");
@@ -41,7 +45,8 @@ function AdminPage() {
   const [courseForm, setCourseForm] =
     useState<CourseFormPayload>(emptyCourseForm);
 
-  const [lessonForm, setLessonForm] = useState(emptyLessonForm);
+  const [lessonForm, setLessonForm] =
+    useState<LessonFormPayload>(emptyLessonForm);
 
   useEffect(() => {
     async function loadCourses() {
@@ -77,6 +82,12 @@ function AdminPage() {
     setEditingCourseId(null);
   }
 
+  function resetLessonForm() {
+    setLessonForm(emptyLessonForm);
+    setEditingLessonId(null);
+    setSelectedCourseId("");
+  }
+
   function startEditingCourse(course: Course) {
     setEditingCourseId(course.id);
 
@@ -86,6 +97,23 @@ function AdminPage() {
       shortName: course.shortName,
       level: course.level,
       instructor: course.instructor,
+    });
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }
+
+  function startEditingLesson(course: Course, lesson: Lesson) {
+    setEditingLessonId(lesson.id);
+    setSelectedCourseId(String(course.id));
+
+    setLessonForm({
+      title: lesson.title,
+      description: lesson.description,
+      content: lesson.content || "",
+      duration: lesson.duration,
     });
 
     window.scrollTo({
@@ -145,10 +173,14 @@ function AdminPage() {
     }
   }
 
-  async function handleAddLesson(event: FormEvent<HTMLFormElement>) {
+  async function handleSaveLesson(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (!token || !selectedCourseId) {
+    if (!token) {
+      return;
+    }
+
+    if (!editingLessonId && !selectedCourseId) {
       setErrorMessage("Please select a course first.");
       return;
     }
@@ -157,14 +189,19 @@ function AdminPage() {
       setMessage("");
       setErrorMessage("");
 
-      await addLessonToCourse(Number(selectedCourseId), lessonForm, token);
-      await refreshCourses();
+      if (editingLessonId) {
+        await updateLessonInCourse(editingLessonId, lessonForm, token);
+        setMessage("Lesson updated successfully.");
+      } else {
+        await addLessonToCourse(Number(selectedCourseId), lessonForm, token);
+        setMessage("Lesson added successfully.");
+      }
 
-      setLessonForm(emptyLessonForm);
-      setMessage("Lesson added successfully.");
+      await refreshCourses();
+      resetLessonForm();
     } catch (error) {
       setErrorMessage(
-        error instanceof Error ? error.message : "Unable to add lesson.",
+        error instanceof Error ? error.message : "Unable to save lesson.",
       );
     }
   }
@@ -193,7 +230,7 @@ function AdminPage() {
       );
 
       if (selectedCourseId === String(course.id)) {
-        setSelectedCourseId("");
+        resetLessonForm();
       }
 
       if (editingCourseId === course.id) {
@@ -228,6 +265,10 @@ function AdminPage() {
       await deleteLessonFromCourse(lessonId, token);
       await refreshCourses();
 
+      if (editingLessonId === lessonId) {
+        resetLessonForm();
+      }
+
       setMessage("Lesson deleted successfully.");
     } catch (error) {
       setErrorMessage(
@@ -242,9 +283,7 @@ function AdminPage() {
         <div>
           <p className="small-heading">ADMIN PANEL</p>
           <h1>Course Management</h1>
-          <p>
-            Create, update and remove learning content shown to students.
-          </p>
+          <p>Create, update and remove learning content shown to students.</p>
         </div>
 
         <div className="admin-role-badge">
@@ -363,16 +402,19 @@ function AdminPage() {
           )}
         </form>
 
-        <form className="auth-form admin-form" onSubmit={handleAddLesson}>
+        <form className="auth-form admin-form" onSubmit={handleSaveLesson}>
           <div className="form-heading">
-            <p className="small-heading">LESSONS</p>
-            <h2>Add Lesson to Course</h2>
+            <p className="small-heading">
+              {editingLessonId ? "EDIT LESSON" : "LESSONS"}
+            </p>
+            <h2>{editingLessonId ? "Edit Lesson Content" : "Add Lesson"}</h2>
           </div>
 
           <label>
             Select Course
             <select
               value={selectedCourseId}
+              disabled={editingLessonId !== null}
               onChange={(event) => setSelectedCourseId(event.target.value)}
             >
               <option value="">Choose a course</option>
@@ -398,7 +440,7 @@ function AdminPage() {
           </label>
 
           <label>
-            Description
+            Short Description
             <textarea
               value={lessonForm.description}
               onChange={(event) =>
@@ -407,7 +449,22 @@ function AdminPage() {
                   description: event.target.value,
                 })
               }
-              placeholder="Write a short lesson description"
+              placeholder="Write a short lesson summary"
+            />
+          </label>
+
+          <label>
+            Full Lesson Content
+            <textarea
+              className="lesson-content-textarea"
+              value={lessonForm.content}
+              onChange={(event) =>
+                setLessonForm({
+                  ...lessonForm,
+                  content: event.target.value,
+                })
+              }
+              placeholder="Write full lesson notes, examples, code, or explanation here..."
             />
           </label>
 
@@ -424,15 +481,25 @@ function AdminPage() {
           </label>
 
           <button type="submit" className="primary-button">
-            Add Lesson
+            {editingLessonId ? "Update Lesson" : "Add Lesson"}
           </button>
+
+          {editingLessonId && (
+            <button
+              type="button"
+              className="secondary-button full-width-button"
+              onClick={resetLessonForm}
+            >
+              Cancel Lesson Edit
+            </button>
+          )}
         </form>
       </div>
 
       <div className="admin-course-panel">
         <div className="lessons-heading">
           <h2>Course Library</h2>
-          <p>Edit courses, delete courses or remove lessons.</p>
+          <p>Edit courses, delete courses, edit lesson content or remove lessons.</p>
         </div>
 
         {courses.length === 0 && !isLoading ? (
@@ -470,7 +537,7 @@ function AdminPage() {
                     className="secondary-button"
                     onClick={() => startEditingCourse(course)}
                   >
-                    Edit
+                    Edit Course
                   </button>
 
                   <button
@@ -478,7 +545,7 @@ function AdminPage() {
                     className="danger-button"
                     onClick={() => handleDeleteCourse(course)}
                   >
-                    Delete
+                    Delete Course
                   </button>
                 </div>
 
@@ -493,15 +560,30 @@ function AdminPage() {
                             {lesson.position}. {lesson.title}
                           </strong>
                           <p>{lesson.duration}</p>
+                          <small>
+                            {lesson.content
+                              ? "Content added"
+                              : "No content added"}
+                          </small>
                         </div>
 
-                        <button
-                          type="button"
-                          className="danger-button small-danger-button"
-                          onClick={() => handleDeleteLesson(lesson.id)}
-                        >
-                          Delete Lesson
-                        </button>
+                        <div className="admin-lesson-actions">
+                          <button
+                            type="button"
+                            className="secondary-button small-secondary-button"
+                            onClick={() => startEditingLesson(course, lesson)}
+                          >
+                            Edit Lesson
+                          </button>
+
+                          <button
+                            type="button"
+                            className="danger-button small-danger-button"
+                            onClick={() => handleDeleteLesson(lesson.id)}
+                          >
+                            Delete Lesson
+                          </button>
+                        </div>
                       </div>
                     ))}
                   </div>
