@@ -1102,7 +1102,7 @@ footer {
 
 .admin-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 28px;
   margin-top: 30px;
 }
@@ -1437,4 +1437,50 @@ footer {
   display: flex;
   justify-content: flex-end;
   margin-top: 18px;
+}
+
+.topic-list {
+  display: grid;
+  gap: 24px;
+}
+
+.topic-card {
+  padding: 24px;
+  border: 1px solid #dbeafe;
+  border-radius: 18px;
+  background-color: #f8fafc;
+}
+
+.topic-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.topic-heading h3 {
+  margin: 6px 0;
+  color: #0f172a;
+  font-size: 24px;
+}
+
+.topic-heading p {
+  margin: 0;
+  color: #64748b;
+}
+
+.topic-heading span {
+  white-space: nowrap;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background-color: #dbeafe;
+  color: #1d4ed8;
+  font-weight: 700;
+}
+
+@media (max-width: 650px) {
+  .topic-heading {
+    flex-direction: column;
+  }
 }

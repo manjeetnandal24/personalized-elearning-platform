@@ -107,7 +107,18 @@ function CourseDetailsPage() {
     );
   }
 
-  const totalLessons = course.lessons.length;
+  const topics = course.topics || [];
+  const allLessons = course.lessons || [];
+
+  const lessonsInsideTopics = new Set(
+    topics.flatMap((topic) => topic.lessons.map((lesson) => lesson.id)),
+  );
+
+  const ungroupedLessons = allLessons.filter(
+    (lesson) => !lessonsInsideTopics.has(lesson.id),
+  );
+
+  const totalLessons = allLessons.length;
   const completedLessons = completedLessonIds.length;
 
   const progressPercentage =
@@ -126,7 +137,7 @@ function CourseDetailsPage() {
           <div>
             <div className="course-badges">
               <span>{course.level}</span>
-              <span>{course.lessons.length} lessons</span>
+              <span>{totalLessons} lessons</span>
             </div>
 
             <h1>{course.title}</h1>
@@ -146,8 +157,8 @@ function CourseDetailsPage() {
             <p className="small-heading">ADMIN VIEW</p>
             <h2>Progress tracking is hidden for admin accounts.</h2>
             <p>
-              You can review the course content here. To add courses or lessons,
-              use the Admin Panel.
+              You can review the course content here. To add courses, topics or
+              lessons, use the Admin Panel.
             </p>
           </div>
 
@@ -204,7 +215,7 @@ function CourseDetailsPage() {
             <p className="status-text left-status-text">{progressMessage}</p>
           )}
 
-          {progressPercentage === 100 && (
+          {progressPercentage === 100 && totalLessons > 0 && (
             <p className="completion-message">
               Excellent! You have completed this course.
             </p>
@@ -214,27 +225,86 @@ function CourseDetailsPage() {
 
       <div className="lessons-section">
         <div className="lessons-heading">
-          <h2>Course Lessons</h2>
+          <h2>Course Curriculum</h2>
 
           {isAdmin ? (
-            <p>Admin view: review lessons without student progress controls.</p>
+            <p>Admin view: review topics and lessons without progress controls.</p>
           ) : (
-            <p>Complete lessons to increase your course progress.</p>
+            <p>Study lessons and mark them complete after reading.</p>
           )}
         </div>
 
         <div className="lesson-list">
-          {course.lessons.map((lesson, index) => (
-            <LessonItem
-              key={lesson.id}
-              lesson={lesson}
-              lessonNumber={index + 1}
-              isCompleted={!isAdmin && completedLessonIds.includes(lesson.id)}
-              isDisabled={!canTrackProgress}
-disabledLabel={isAdmin ? "Admin View" : "Login Required"}
-onToggleComplete={toggleLessonCompletion}
-            />
-          ))}
+          {topics.length === 0 && ungroupedLessons.length === 0 && (
+            <div className="empty-dashboard-card">
+              <h2>No lessons added yet</h2>
+              <p>This course does not have any lessons or topics yet.</p>
+            </div>
+          )}
+
+          {topics.length > 0 && (
+            <div className="topic-list">
+              {topics.map((topic) => (
+                <div className="topic-card" key={topic.id}>
+                  <div className="topic-heading">
+                    <div>
+                      <p className="small-heading">MODULE {topic.position}</p>
+                      <h3>{topic.title}</h3>
+                      <p>{topic.description}</p>
+                    </div>
+
+                    <span>{topic.lessons.length} lessons</span>
+                  </div>
+
+                  {topic.lessons.length === 0 ? (
+                    <p className="status-text left-status-text">
+                      No lessons added in this topic yet.
+                    </p>
+                  ) : (
+                    topic.lessons.map((lesson, index) => (
+                      <LessonItem
+                        key={lesson.id}
+                        lesson={lesson}
+                        lessonNumber={index + 1}
+                        isCompleted={
+                          !isAdmin && completedLessonIds.includes(lesson.id)
+                        }
+                        isDisabled={!canTrackProgress}
+                        disabledLabel={isAdmin ? "Admin View" : "Login Required"}
+                        onToggleComplete={toggleLessonCompletion}
+                      />
+                    ))
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {ungroupedLessons.length > 0 && (
+            <div className="topic-card">
+              <div className="topic-heading">
+                <div>
+                  <p className="small-heading">UNGROUPED</p>
+                  <h3>Other Lessons</h3>
+                  <p>Lessons not assigned to a topic yet.</p>
+                </div>
+
+                <span>{ungroupedLessons.length} lessons</span>
+              </div>
+
+              {ungroupedLessons.map((lesson, index) => (
+                <LessonItem
+                  key={lesson.id}
+                  lesson={lesson}
+                  lessonNumber={index + 1}
+                  isCompleted={!isAdmin && completedLessonIds.includes(lesson.id)}
+                  isDisabled={!canTrackProgress}
+                  disabledLabel={isAdmin ? "Admin View" : "Login Required"}
+                  onToggleComplete={toggleLessonCompletion}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </section>

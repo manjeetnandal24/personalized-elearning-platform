@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import {
   addLessonToCourse,
   createAdminCourse,
+  createTopicForCourse,
   deleteAdminCourse,
   deleteLessonFromCourse,
   fetchAdminCourses,
@@ -11,6 +12,7 @@ import {
   updateLessonInCourse,
   type CourseFormPayload,
   type LessonFormPayload,
+  type TopicFormPayload,
 } from "../api/adminApi";
 import { useAuth } from "../context/AuthContext";
 import type { Course, Lesson } from "../types/course";
@@ -23,18 +25,27 @@ const emptyCourseForm: CourseFormPayload = {
   instructor: "",
 };
 
+const emptyTopicForm: TopicFormPayload = {
+  title: "",
+  description: "",
+};
+
 const emptyLessonForm: LessonFormPayload = {
   title: "",
   description: "",
   content: "",
   duration: "",
+  topicId: null,
 };
 
 function AdminPage() {
   const { user, token } = useAuth();
 
   const [courses, setCourses] = useState<Course[]>([]);
+
+  const [selectedTopicCourseId, setSelectedTopicCourseId] = useState("");
   const [selectedCourseId, setSelectedCourseId] = useState("");
+
   const [editingCourseId, setEditingCourseId] = useState<number | null>(null);
   const [editingLessonId, setEditingLessonId] = useState<number | null>(null);
 
@@ -44,6 +55,9 @@ function AdminPage() {
 
   const [courseForm, setCourseForm] =
     useState<CourseFormPayload>(emptyCourseForm);
+
+  const [topicForm, setTopicForm] =
+    useState<TopicFormPayload>(emptyTopicForm);
 
   const [lessonForm, setLessonForm] =
     useState<LessonFormPayload>(emptyLessonForm);
@@ -77,9 +91,23 @@ function AdminPage() {
     0,
   );
 
+  const totalTopics = courses.reduce(
+    (total, course) => total + course.topics.length,
+    0,
+  );
+
+  const selectedLessonCourse = courses.find(
+    (course) => course.id === Number(selectedCourseId),
+  );
+
   function resetCourseForm() {
     setCourseForm(emptyCourseForm);
     setEditingCourseId(null);
+  }
+
+  function resetTopicForm() {
+    setTopicForm(emptyTopicForm);
+    setSelectedTopicCourseId("");
   }
 
   function resetLessonForm() {
@@ -114,6 +142,7 @@ function AdminPage() {
       description: lesson.description,
       content: lesson.content || "",
       duration: lesson.duration,
+      topicId: lesson.topicId || null,
     });
 
     window.scrollTo({
@@ -161,6 +190,7 @@ function AdminPage() {
 
         setCourses((currentCourses) => [newCourse, ...currentCourses]);
         setSelectedCourseId(String(newCourse.id));
+        setSelectedTopicCourseId(String(newCourse.id));
 
         setMessage("Course created successfully.");
       }
@@ -169,6 +199,30 @@ function AdminPage() {
     } catch (error) {
       setErrorMessage(
         error instanceof Error ? error.message : "Unable to save course.",
+      );
+    }
+  }
+
+  async function handleCreateTopic(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    if (!token || !selectedTopicCourseId) {
+      setErrorMessage("Please select a course for the topic.");
+      return;
+    }
+
+    try {
+      setMessage("");
+      setErrorMessage("");
+
+      await createTopicForCourse(Number(selectedTopicCourseId), topicForm, token);
+      await refreshCourses();
+
+      resetTopicForm();
+      setMessage("Topic created successfully.");
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error ? error.message : "Unable to create topic.",
       );
     }
   }
@@ -212,7 +266,7 @@ function AdminPage() {
     }
 
     const confirmed = window.confirm(
-      `Delete "${course.title}" and all its lessons? This cannot be undone.`,
+      `Delete "${course.title}" and all its topics/lessons? This cannot be undone.`,
     );
 
     if (!confirmed) {
@@ -231,6 +285,10 @@ function AdminPage() {
 
       if (selectedCourseId === String(course.id)) {
         resetLessonForm();
+      }
+
+      if (selectedTopicCourseId === String(course.id)) {
+        resetTopicForm();
       }
 
       if (editingCourseId === course.id) {
@@ -282,8 +340,11 @@ function AdminPage() {
       <div className="admin-hero-card">
         <div>
           <p className="small-heading">ADMIN PANEL</p>
-          <h1>Course Management</h1>
-          <p>Create, update and remove learning content shown to students.</p>
+          <h1>Course Curriculum Builder</h1>
+          <p>
+            Create courses, organize topics/modules, add lessons and manage
+            learning content shown to students.
+          </p>
         </div>
 
         <div className="admin-role-badge">
@@ -299,13 +360,13 @@ function AdminPage() {
         </div>
 
         <div className="dashboard-card">
-          <p>Total Lessons</p>
-          <h2>{totalLessons}</h2>
+          <p>Total Topics</p>
+          <h2>{totalTopics}</h2>
         </div>
 
         <div className="dashboard-card">
-          <p>Admin Account</p>
-          <h2>Active</h2>
+          <p>Total Lessons</p>
+          <h2>{totalLessons}</h2>
         </div>
       </div>
 
@@ -317,7 +378,7 @@ function AdminPage() {
         <form className="auth-form admin-form" onSubmit={handleSaveCourse}>
           <div className="form-heading">
             <p className="small-heading">
-              {editingCourseId ? "EDIT" : "CREATE"}
+              {editingCourseId ? "EDIT COURSE" : "CREATE COURSE"}
             </p>
             <h2>{editingCourseId ? "Edit Course" : "Add New Course"}</h2>
           </div>
@@ -330,7 +391,7 @@ function AdminPage() {
               onChange={(event) =>
                 setCourseForm({ ...courseForm, title: event.target.value })
               }
-              placeholder="Example: Python Basics"
+              placeholder="Example: HTML Mastery"
             />
           </label>
 
@@ -356,7 +417,7 @@ function AdminPage() {
               onChange={(event) =>
                 setCourseForm({ ...courseForm, shortName: event.target.value })
               }
-              placeholder="PY"
+              placeholder="HTML"
             />
           </label>
 
@@ -402,6 +463,56 @@ function AdminPage() {
           )}
         </form>
 
+        <form className="auth-form admin-form" onSubmit={handleCreateTopic}>
+          <div className="form-heading">
+            <p className="small-heading">MODULES</p>
+            <h2>Add Topic / Module</h2>
+          </div>
+
+          <label>
+            Select Course
+            <select
+              value={selectedTopicCourseId}
+              onChange={(event) => setSelectedTopicCourseId(event.target.value)}
+            >
+              <option value="">Choose a course</option>
+
+              {courses.map((course) => (
+                <option value={course.id} key={course.id}>
+                  {course.title}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label>
+            Topic Title
+            <input
+              type="text"
+              value={topicForm.title}
+              onChange={(event) =>
+                setTopicForm({ ...topicForm, title: event.target.value })
+              }
+              placeholder="Example: HTML Introduction"
+            />
+          </label>
+
+          <label>
+            Topic Description
+            <textarea
+              value={topicForm.description}
+              onChange={(event) =>
+                setTopicForm({ ...topicForm, description: event.target.value })
+              }
+              placeholder="What will students learn in this topic?"
+            />
+          </label>
+
+          <button type="submit" className="primary-button">
+            Create Topic
+          </button>
+        </form>
+
         <form className="auth-form admin-form" onSubmit={handleSaveLesson}>
           <div className="form-heading">
             <p className="small-heading">
@@ -415,13 +526,37 @@ function AdminPage() {
             <select
               value={selectedCourseId}
               disabled={editingLessonId !== null}
-              onChange={(event) => setSelectedCourseId(event.target.value)}
+              onChange={(event) => {
+                setSelectedCourseId(event.target.value);
+                setLessonForm({ ...lessonForm, topicId: null });
+              }}
             >
               <option value="">Choose a course</option>
 
               {courses.map((course) => (
                 <option value={course.id} key={course.id}>
                   {course.title}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label>
+            Select Topic / Module
+            <select
+              value={lessonForm.topicId || ""}
+              onChange={(event) =>
+                setLessonForm({
+                  ...lessonForm,
+                  topicId: event.target.value ? Number(event.target.value) : null,
+                })
+              }
+            >
+              <option value="">No topic / Ungrouped lesson</option>
+
+              {selectedLessonCourse?.topics.map((topic) => (
+                <option value={topic.id} key={topic.id}>
+                  {topic.title}
                 </option>
               ))}
             </select>
@@ -435,7 +570,7 @@ function AdminPage() {
               onChange={(event) =>
                 setLessonForm({ ...lessonForm, title: event.target.value })
               }
-              placeholder="Example: Introduction to Python"
+              placeholder="Example: What is HTML?"
             />
           </label>
 
@@ -499,7 +634,10 @@ function AdminPage() {
       <div className="admin-course-panel">
         <div className="lessons-heading">
           <h2>Course Library</h2>
-          <p>Edit courses, delete courses, edit lesson content or remove lessons.</p>
+          <p>
+            Manage courses, topics/modules, lesson content and student-facing
+            curriculum.
+          </p>
         </div>
 
         {courses.length === 0 && !isLoading ? (
@@ -509,87 +647,171 @@ function AdminPage() {
           </div>
         ) : (
           <div className="admin-course-management-list">
-            {courses.map((course) => (
-              <article className="admin-course-management-card" key={course.id}>
-                <div className="admin-course-card-top">
-                  <div className="course-icon">{course.shortName}</div>
+            {courses.map((course) => {
+              const lessonsInsideTopics = new Set(
+                course.topics.flatMap((topic) =>
+                  topic.lessons.map((lesson) => lesson.id),
+                ),
+              );
 
-                  <div>
-                    <h3>{course.title}</h3>
-                    <p>
-                      {course.level} • {course.lessons.length} lessons •
-                      Instructor: {course.instructor}
-                    </p>
+              const ungroupedLessons = course.lessons.filter(
+                (lesson) => !lessonsInsideTopics.has(lesson.id),
+              );
+
+              return (
+                <article
+                  className="admin-course-management-card"
+                  key={course.id}
+                >
+                  <div className="admin-course-card-top">
+                    <div className="course-icon">{course.shortName}</div>
+
+                    <div>
+                      <h3>{course.title}</h3>
+                      <p>
+                        {course.level} • {course.topics.length} topics •{" "}
+                        {course.lessons.length} lessons • Instructor:{" "}
+                        {course.instructor}
+                      </p>
+                    </div>
                   </div>
-                </div>
 
-                <p className="admin-course-description">
-                  {course.description}
-                </p>
+                  <p className="admin-course-description">
+                    {course.description}
+                  </p>
 
-                <div className="admin-action-row">
-                  <Link to={`/courses/${course.id}`} className="secondary-button">
-                    View
-                  </Link>
+                  <div className="admin-action-row">
+                    <Link
+                      to={`/courses/${course.id}`}
+                      className="secondary-button"
+                    >
+                      View
+                    </Link>
 
-                  <button
-                    type="button"
-                    className="secondary-button"
-                    onClick={() => startEditingCourse(course)}
-                  >
-                    Edit Course
-                  </button>
+                    <button
+                      type="button"
+                      className="secondary-button"
+                      onClick={() => startEditingCourse(course)}
+                    >
+                      Edit Course
+                    </button>
 
-                  <button
-                    type="button"
-                    className="danger-button"
-                    onClick={() => handleDeleteCourse(course)}
-                  >
-                    Delete Course
-                  </button>
-                </div>
-
-                {course.lessons.length > 0 && (
-                  <div className="admin-lesson-list">
-                    <h4>Lessons</h4>
-
-                    {course.lessons.map((lesson) => (
-                      <div className="admin-lesson-row" key={lesson.id}>
-                        <div>
-                          <strong>
-                            {lesson.position}. {lesson.title}
-                          </strong>
-                          <p>{lesson.duration}</p>
-                          <small>
-                            {lesson.content
-                              ? "Content added"
-                              : "No content added"}
-                          </small>
-                        </div>
-
-                        <div className="admin-lesson-actions">
-                          <button
-                            type="button"
-                            className="secondary-button small-secondary-button"
-                            onClick={() => startEditingLesson(course, lesson)}
-                          >
-                            Edit Lesson
-                          </button>
-
-                          <button
-                            type="button"
-                            className="danger-button small-danger-button"
-                            onClick={() => handleDeleteLesson(lesson.id)}
-                          >
-                            Delete Lesson
-                          </button>
-                        </div>
-                      </div>
-                    ))}
+                    <button
+                      type="button"
+                      className="danger-button"
+                      onClick={() => handleDeleteCourse(course)}
+                    >
+                      Delete Course
+                    </button>
                   </div>
-                )}
-              </article>
-            ))}
+
+                  {course.topics.length > 0 && (
+                    <div className="admin-lesson-list">
+                      <h4>Topics / Modules</h4>
+
+                      {course.topics.map((topic) => (
+                        <div className="admin-topic-box" key={topic.id}>
+                          <div className="admin-topic-heading">
+                            <div>
+                              <strong>
+                                Module {topic.position}: {topic.title}
+                              </strong>
+                              <p>{topic.description}</p>
+                            </div>
+
+                            <span>{topic.lessons.length} lessons</span>
+                          </div>
+
+                          {topic.lessons.length === 0 ? (
+                            <p className="status-text left-status-text">
+                              No lessons added in this topic yet.
+                            </p>
+                          ) : (
+                            topic.lessons.map((lesson) => (
+                              <div className="admin-lesson-row" key={lesson.id}>
+                                <div>
+                                  <strong>
+                                    {lesson.position}. {lesson.title}
+                                  </strong>
+                                  <p>{lesson.duration}</p>
+                                  <small>
+                                    {lesson.content
+                                      ? "Content added"
+                                      : "No content added"}
+                                  </small>
+                                </div>
+
+                                <div className="admin-lesson-actions">
+                                  <button
+                                    type="button"
+                                    className="secondary-button small-secondary-button"
+                                    onClick={() =>
+                                      startEditingLesson(course, lesson)
+                                    }
+                                  >
+                                    Edit Lesson
+                                  </button>
+
+                                  <button
+                                    type="button"
+                                    className="danger-button small-danger-button"
+                                    onClick={() =>
+                                      handleDeleteLesson(lesson.id)
+                                    }
+                                  >
+                                    Delete Lesson
+                                  </button>
+                                </div>
+                              </div>
+                            ))
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {ungroupedLessons.length > 0 && (
+                    <div className="admin-lesson-list">
+                      <h4>Ungrouped Lessons</h4>
+
+                      {ungroupedLessons.map((lesson) => (
+                        <div className="admin-lesson-row" key={lesson.id}>
+                          <div>
+                            <strong>
+                              {lesson.position}. {lesson.title}
+                            </strong>
+                            <p>{lesson.duration}</p>
+                            <small>
+                              {lesson.content
+                                ? "Content added"
+                                : "No content added"}
+                            </small>
+                          </div>
+
+                          <div className="admin-lesson-actions">
+                            <button
+                              type="button"
+                              className="secondary-button small-secondary-button"
+                              onClick={() => startEditingLesson(course, lesson)}
+                            >
+                              Edit Lesson
+                            </button>
+
+                            <button
+                              type="button"
+                              className="danger-button small-danger-button"
+                              onClick={() => handleDeleteLesson(lesson.id)}
+                            >
+                              Delete Lesson
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </article>
+              );
+            })}
           </div>
         )}
       </div>

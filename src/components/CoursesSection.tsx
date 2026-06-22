@@ -13,9 +13,10 @@ function CoursesSection() {
     async function loadCourses() {
       try {
         const courseData = await fetchCourses();
-        setCourses(courseData);
+
+        setCourses(Array.isArray(courseData) ? courseData : []);
       } catch {
-        setErrorMessage("Unable to load courses. Please check the backend.");
+        setErrorMessage("Unable to load courses. Please check backend server.");
       } finally {
         setIsLoading(false);
       }
@@ -27,18 +28,22 @@ function CoursesSection() {
   return (
     <section className="courses-section" id="courses">
       <div className="section-heading">
-        <h2>Popular Courses</h2>
-        <p>Start learning with our beginner-friendly courses.</p>
+        <h2>Explore Courses</h2>
+        <p>Choose a course and start learning step by step.</p>
       </div>
 
       {isLoading && <p className="status-text">Loading courses...</p>}
 
       {errorMessage && <p className="error-text">{errorMessage}</p>}
 
-      {!isLoading && !errorMessage && (
-        <div className="course-container">
+      {!isLoading && !errorMessage && courses.length === 0 && (
+        <p className="status-text">No courses available yet.</p>
+      )}
+
+      {!isLoading && !errorMessage && courses.length > 0 && (
+        <div className="course-grid">
           {courses.map((course) => (
-            <CourseCard key={course.id} course={course} />
+            <CourseCard course={course} key={course.id} />
           ))}
         </div>
       )}
