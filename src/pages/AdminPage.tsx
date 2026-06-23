@@ -16,6 +16,7 @@ import {
 } from "../api/adminApi";
 import { useAuth } from "../context/AuthContext";
 import type { Course, Lesson } from "../types/course";
+import AdminQuizBuilder from "../components/AdminQuizBuilder";
 
 const emptyCourseForm: CourseFormPayload = {
   title: "",
@@ -383,6 +384,8 @@ function AdminPage() {
             <h2>{editingCourseId ? "Edit Course" : "Add New Course"}</h2>
           </div>
 
+         
+
           <label>
             Course Title
             <input
@@ -521,6 +524,7 @@ function AdminPage() {
             <h2>{editingLessonId ? "Edit Lesson Content" : "Add Lesson"}</h2>
           </div>
 
+
           <label>
             Select Course
             <select
@@ -630,6 +634,10 @@ function AdminPage() {
           )}
         </form>
       </div>
+
+
+       <AdminQuizBuilder courses={courses} />
+       
 
       <div className="admin-course-panel">
         <div className="lessons-heading">
