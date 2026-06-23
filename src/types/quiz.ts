@@ -5,13 +5,13 @@ export type QuizQuestion = {
   optionB: string;
   optionC: string;
   optionD: string;
-  correctOption: string;
-  explanation: string;
+  correctOption?: string;
+  explanation?: string;
   points: number;
   position: number;
-  quizId: number;
-  createdAt: string;
-  updatedAt: string;
+  quizId?: number;
+  createdAt?: string;
+  updatedAt?: string;
 };
 
 export type QuizTopic = {
@@ -49,4 +49,48 @@ export type CreateQuestionPayload = {
   correctOption: string;
   explanation: string;
   points: number;
+};
+
+export type QuizAnswerPayload = {
+  questionId: number;
+  selectedOption: string;
+};
+
+export type CheckedQuizAnswer = {
+  questionId: number;
+  question: string;
+  selectedOption: string;
+  correctOption: string;
+  isCorrect: boolean;
+  explanation: string;
+};
+
+export type QuizAttempt = {
+  id: number;
+  quizId: number;
+  score: number;
+  totalQuestions: number;
+  correctAnswers: number;
+  passed: boolean;
+  answers?: CheckedQuizAnswer[];
+};
+
+export type SavedQuizAttempt = {
+  id: number;
+  userId: number;
+  quizId: number;
+  score: number;
+  totalQuestions: number;
+  correctAnswers: number;
+  passed: boolean;
+  selectedAnswers: CheckedQuizAnswer[];
+  createdAt: string;
+  updatedAt: string;
+  quiz: {
+    id: number;
+    title: string;
+    passingScore: number;
+    courseId: number;
+    topicId?: number | null;
+  };
 };

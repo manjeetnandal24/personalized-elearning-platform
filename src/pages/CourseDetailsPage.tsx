@@ -9,6 +9,7 @@ import {
 import LessonItem from "../components/LessonItem";
 import { useAuth } from "../context/AuthContext";
 import type { Course } from "../types/course";
+import StudentQuizSection from "../components/StudentQuizSection";
 
 function CourseDetailsPage() {
   const { courseId } = useParams<{ courseId: string }>();
@@ -307,6 +308,9 @@ function CourseDetailsPage() {
           )}
         </div>
       </div>
+
+            <StudentQuizSection courseId={course.id} />
+            
     </section>
   );
 }
