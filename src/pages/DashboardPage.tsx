@@ -129,6 +129,83 @@ function DashboardPage() {
             </div>
           )}
 
+          <div className="quiz-dashboard-section">
+            <div className="lessons-heading">
+              <h2>Quiz Performance</h2>
+              <p>Your quiz attempts and assessment results.</p>
+            </div>
+
+            <div className="dashboard-grid">
+              <div className="dashboard-card">
+                <p>Quiz Attempts</p>
+                <h2>{dashboardData.quizAnalytics.totalAttempts}</h2>
+              </div>
+
+              <div className="dashboard-card">
+                <p>Average Score</p>
+                <h2>{dashboardData.quizAnalytics.averageScore}%</h2>
+              </div>
+
+              <div className="dashboard-card">
+                <p>Passed Attempts</p>
+                <h2>{dashboardData.quizAnalytics.passedAttempts}</h2>
+              </div>
+            </div>
+
+            {dashboardData.quizAnalytics.totalAttempts === 0 ? (
+              <div className="empty-dashboard-card">
+                <h2>No quiz attempts yet</h2>
+                <p>
+                  Attempt a course quiz to see your quiz performance here.
+                </p>
+
+                <Link to="/courses" className="course-link dashboard-login-link">
+                  Browse Courses
+                </Link>
+              </div>
+            ) : (
+              <div className="recent-quiz-panel">
+                <div className="lessons-heading">
+                  <h2>Recent Quiz Results</h2>
+                  <p>Your latest quiz attempts from PostgreSQL.</p>
+                </div>
+
+                {dashboardData.quizAnalytics.recentAttempts.map((attempt) => (
+                  <Link
+                    to={`/courses/${attempt.courseId}`}
+                    className="recent-quiz-row"
+                    key={attempt.id}
+                  >
+                    <div className="course-icon">{attempt.courseShortName}</div>
+
+                    <div className="recent-quiz-info">
+                      <h3>{attempt.quizTitle}</h3>
+                      <p>
+                        {attempt.courseTitle}
+                        {attempt.topicTitle ? ` • ${attempt.topicTitle}` : ""}
+                      </p>
+                      <p>
+                        Correct answers: {attempt.correctAnswers}/
+                        {attempt.totalQuestions}
+                      </p>
+                    </div>
+
+                    <div
+                      className={
+                        attempt.passed
+                          ? "quiz-status-pill passed-pill"
+                          : "quiz-status-pill failed-pill"
+                      }
+                    >
+                      <strong>{attempt.score}%</strong>
+                      <span>{attempt.passed ? "Passed" : "Failed"}</span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+
           {dashboardData.courses.length > 0 && (
             <div className="dashboard-course-list">
               <div className="lessons-heading">

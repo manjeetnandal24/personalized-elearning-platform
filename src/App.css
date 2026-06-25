@@ -1713,3 +1713,77 @@ footer {
     width: 100%;
   }
 }
+
+.quiz-dashboard-section {
+  margin-top: 42px;
+}
+
+.recent-quiz-panel {
+  margin-top: 28px;
+}
+
+.recent-quiz-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 14px;
+  padding: 20px;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  background-color: white;
+  color: inherit;
+  text-decoration: none;
+}
+
+.recent-quiz-row:hover {
+  border-color: #bfdbfe;
+  background-color: #eff6ff;
+}
+
+.recent-quiz-info h3 {
+  margin: 0 0 6px;
+  color: #0f172a;
+}
+
+.recent-quiz-info p {
+  margin: 4px 0;
+  color: #64748b;
+}
+
+.quiz-status-pill {
+  min-width: 95px;
+  padding: 12px;
+  border-radius: 14px;
+  text-align: center;
+}
+
+.quiz-status-pill strong {
+  display: block;
+  font-size: 22px;
+}
+
+.quiz-status-pill span {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.passed-pill {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.failed-pill {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+@media (max-width: 650px) {
+  .recent-quiz-row {
+    grid-template-columns: 1fr;
+  }
+
+  .quiz-status-pill {
+    width: 100%;
+  }
+}
