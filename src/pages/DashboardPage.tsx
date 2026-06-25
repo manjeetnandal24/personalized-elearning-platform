@@ -54,9 +54,9 @@ function DashboardPage() {
   return (
     <section className="dashboard-page">
       <div className="dashboard-heading">
-        <p className="small-heading">STUDENT DASHBOARD</p>
+        <p className="small-heading">STUDENT OVERVIEW</p>
         <h1>Welcome back, {user?.name || "Student"}</h1>
-        <p>Continue learning and monitor your real progress.</p>
+        <p>Your learning progress, current course and quick actions.</p>
       </div>
 
       <BackendStatus />
@@ -87,13 +87,13 @@ function DashboardPage() {
             </div>
 
             <div className="dashboard-card">
-              <p>Completed Lessons</p>
-              <h2>{dashboardData.completedLessons}</h2>
+              <p>Overall Progress</p>
+              <h2>{dashboardData.overallProgress}%</h2>
             </div>
 
             <div className="dashboard-card">
-              <p>Overall Progress</p>
-              <h2>{dashboardData.overallProgress}%</h2>
+              <p>Average Quiz Score</p>
+              <h2>{dashboardData.quizAnalytics.averageScore}%</h2>
             </div>
           </div>
 
@@ -119,9 +119,7 @@ function DashboardPage() {
           ) : (
             <div className="empty-dashboard-card">
               <h2>No courses started yet</h2>
-              <p>
-                Open a course and complete lessons to see your dashboard data.
-              </p>
+              <p>Open a course and complete lessons to start learning.</p>
 
               <Link to="/courses" className="course-link dashboard-login-link">
                 Browse Courses
@@ -129,118 +127,25 @@ function DashboardPage() {
             </div>
           )}
 
-          <div className="quiz-dashboard-section">
-            <div className="lessons-heading">
-              <h2>Quiz Performance</h2>
-              <p>Your quiz attempts and assessment results.</p>
-            </div>
+          <div className="admin-overview-actions">
+            <Link to="/dashboard/courses" className="admin-overview-card">
+              <span>🎯</span>
+              <h3>My Courses</h3>
+              <p>View course-wise progress and continue learning.</p>
+            </Link>
 
-            <div className="dashboard-grid">
-              <div className="dashboard-card">
-                <p>Quiz Attempts</p>
-                <h2>{dashboardData.quizAnalytics.totalAttempts}</h2>
-              </div>
+            <Link to="/dashboard/quizzes" className="admin-overview-card">
+              <span>📝</span>
+              <h3>Quiz Results</h3>
+              <p>Review quiz attempts, scores and pass/fail status.</p>
+            </Link>
 
-              <div className="dashboard-card">
-                <p>Average Score</p>
-                <h2>{dashboardData.quizAnalytics.averageScore}%</h2>
-              </div>
-
-              <div className="dashboard-card">
-                <p>Passed Attempts</p>
-                <h2>{dashboardData.quizAnalytics.passedAttempts}</h2>
-              </div>
-            </div>
-
-            {dashboardData.quizAnalytics.totalAttempts === 0 ? (
-              <div className="empty-dashboard-card">
-                <h2>No quiz attempts yet</h2>
-                <p>
-                  Attempt a course quiz to see your quiz performance here.
-                </p>
-
-                <Link to="/courses" className="course-link dashboard-login-link">
-                  Browse Courses
-                </Link>
-              </div>
-            ) : (
-              <div className="recent-quiz-panel">
-                <div className="lessons-heading">
-                  <h2>Recent Quiz Results</h2>
-                  <p>Your latest quiz attempts from PostgreSQL.</p>
-                </div>
-
-                {dashboardData.quizAnalytics.recentAttempts.map((attempt) => (
-                  <Link
-                    to={`/courses/${attempt.courseId}`}
-                    className="recent-quiz-row"
-                    key={attempt.id}
-                  >
-                    <div className="course-icon">{attempt.courseShortName}</div>
-
-                    <div className="recent-quiz-info">
-                      <h3>{attempt.quizTitle}</h3>
-                      <p>
-                        {attempt.courseTitle}
-                        {attempt.topicTitle ? ` • ${attempt.topicTitle}` : ""}
-                      </p>
-                      <p>
-                        Correct answers: {attempt.correctAnswers}/
-                        {attempt.totalQuestions}
-                      </p>
-                    </div>
-
-                    <div
-                      className={
-                        attempt.passed
-                          ? "quiz-status-pill passed-pill"
-                          : "quiz-status-pill failed-pill"
-                      }
-                    >
-                      <strong>{attempt.score}%</strong>
-                      <span>{attempt.passed ? "Passed" : "Failed"}</span>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            )}
+            <Link to="/courses" className="admin-overview-card">
+              <span>📚</span>
+              <h3>Browse Courses</h3>
+              <p>Explore all available learning content.</p>
+            </Link>
           </div>
-
-          {dashboardData.courses.length > 0 && (
-            <div className="dashboard-course-list">
-              <div className="lessons-heading">
-                <h2>Your Courses</h2>
-                <p>Course-wise learning progress from your database.</p>
-              </div>
-
-              {dashboardData.courses.map((course) => (
-                <Link
-                  to={`/courses/${course.id}`}
-                  className="dashboard-course-row"
-                  key={course.id}
-                >
-                  <div className="course-icon">{course.shortName}</div>
-
-                  <div className="dashboard-course-info">
-                    <h3>{course.title}</h3>
-                    <p>
-                      {course.completedLessons} of {course.totalLessons} lessons
-                      completed
-                    </p>
-
-                    <div className="mini-progress-bar">
-                      <div
-                        className="mini-progress-fill"
-                        style={{ width: `${course.progressPercentage}%` }}
-                      />
-                    </div>
-                  </div>
-
-                  <strong>{course.progressPercentage}%</strong>
-                </Link>
-              ))}
-            </div>
-          )}
         </>
       )}
     </section>
