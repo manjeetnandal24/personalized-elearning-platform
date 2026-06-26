@@ -3,13 +3,17 @@ import { Link, useParams } from "react-router-dom";
 
 import { fetchCourseById } from "../api/courseApi";
 import {
+  enrollInCourse,
+  fetchEnrollmentStatus,
+} from "../api/enrollmentApi";
+import {
   fetchCourseProgress,
   toggleLessonProgress,
 } from "../api/progressApi";
 import LessonItem from "../components/LessonItem";
+import StudentQuizSection from "../components/StudentQuizSection";
 import { useAuth } from "../context/AuthContext";
 import type { Course } from "../types/course";
-import StudentQuizSection from "../components/StudentQuizSection";
 
 function CourseDetailsPage() {
   const { courseId } = useParams<{ courseId: string }>();
@@ -17,13 +21,21 @@ function CourseDetailsPage() {
 
   const [course, setCourse] = useState<Course | null>(null);
   const [completedLessonIds, setCompletedLessonIds] = useState<number[]>([]);
+
+  const [isEnrolled, setIsEnrolled] = useState(false);
+  const [isEnrollmentLoading, setIsEnrollmentLoading] = useState(false);
+  const [isEnrolling, setIsEnrolling] = useState(false);
+
   const [isLoading, setIsLoading] = useState(true);
   const [isProgressLoading, setIsProgressLoading] = useState(false);
+
   const [errorMessage, setErrorMessage] = useState("");
   const [progressMessage, setProgressMessage] = useState("");
+  const [enrollmentMessage, setEnrollmentMessage] = useState("");
 
   const isAdmin = user?.role === "ADMIN";
-  const canTrackProgress = isAuthenticated && !isAdmin;
+  const isStudent = isAuthenticated && !isAdmin;
+  const canTrackProgress = isStudent && isEnrolled;
 
   useEffect(() => {
     async function loadCourseDetails() {
@@ -47,6 +59,29 @@ function CourseDetailsPage() {
   }, [courseId]);
 
   useEffect(() => {
+    async function loadEnrollmentStatus() {
+      if (!course || !isStudent || !token) {
+        setIsEnrolled(false);
+        return;
+      }
+
+      try {
+        setIsEnrollmentLoading(true);
+        setEnrollmentMessage("");
+
+        const status = await fetchEnrollmentStatus(course.id, token);
+        setIsEnrolled(status.isEnrolled);
+      } catch {
+        setEnrollmentMessage("Unable to check enrollment status.");
+      } finally {
+        setIsEnrollmentLoading(false);
+      }
+    }
+
+    loadEnrollmentStatus();
+  }, [course, isStudent, token]);
+
+  useEffect(() => {
     async function loadSavedProgress() {
       if (!course || !canTrackProgress || !token) {
         setCompletedLessonIds([]);
@@ -58,7 +93,6 @@ function CourseDetailsPage() {
         setProgressMessage("");
 
         const progress = await fetchCourseProgress(course.id, token);
-
         setCompletedLessonIds(progress.completedLessonIds);
       } catch {
         setProgressMessage("Unable to load saved progress.");
@@ -70,8 +104,34 @@ function CourseDetailsPage() {
     loadSavedProgress();
   }, [course, canTrackProgress, token]);
 
+  async function handleEnrollCourse() {
+    if (!course || !token) {
+      return;
+    }
+
+    try {
+      setIsEnrolling(true);
+      setEnrollmentMessage("");
+      setProgressMessage("");
+
+      await enrollInCourse(course.id, token);
+
+      setIsEnrolled(true);
+      setEnrollmentMessage("You are enrolled in this course.");
+    } catch (error) {
+      setEnrollmentMessage(
+        error instanceof Error
+          ? error.message
+          : "Unable to enroll in this course.",
+      );
+    } finally {
+      setIsEnrolling(false);
+    }
+  }
+
   async function toggleLessonCompletion(lessonId: number) {
     if (!canTrackProgress || !token) {
+      setProgressMessage("Please enroll in this course first.");
       return;
     }
 
@@ -127,6 +187,14 @@ function CourseDetailsPage() {
       ? 0
       : Math.round((completedLessons / totalLessons) * 100);
 
+  const disabledLabel = isAdmin
+    ? "Admin View"
+    : !isAuthenticated
+      ? "Login Required"
+      : !isEnrolled
+        ? "Enroll First"
+        : "Unavailable";
+
   return (
     <section className="course-details-page">
       <div className="course-details-header">
@@ -139,6 +207,8 @@ function CourseDetailsPage() {
             <div className="course-badges">
               <span>{course.level}</span>
               <span>{totalLessons} lessons</span>
+
+              {isStudent && isEnrolled && <span>Enrolled</span>}
             </div>
 
             <h1>{course.title}</h1>
@@ -173,15 +243,69 @@ function CourseDetailsPage() {
         <div className="login-required-card">
           <div>
             <p className="small-heading">LOGIN REQUIRED</p>
-            <h2>Login to track your lesson progress.</h2>
+            <h2>Login to enroll and track progress.</h2>
             <p>
-              You can view the course content, but progress tracking is available
-              only after login.
+              You can view the course content, but enrollment, progress tracking
+              and quiz attempts are available only after login.
             </p>
           </div>
 
           <Link to="/login" className="course-link login-required-link">
             Login
+          </Link>
+        </div>
+      )}
+
+      {isStudent && !isEnrolled && (
+        <div className="login-required-card">
+          <div>
+            <p className="small-heading">ENROLLMENT REQUIRED</p>
+            <h2>Enroll in this course to start learning.</h2>
+            <p>
+              After enrollment, you can mark lessons complete, track progress and
+              attempt quizzes.
+            </p>
+
+            {isEnrollmentLoading && (
+              <p className="status-text left-status-text">
+                Checking enrollment status...
+              </p>
+            )}
+
+            {enrollmentMessage && (
+              <p className="status-text left-status-text">
+                {enrollmentMessage}
+              </p>
+            )}
+          </div>
+
+          <button
+            type="button"
+            className="course-link login-required-link"
+            onClick={handleEnrollCourse}
+            disabled={isEnrolling || isEnrollmentLoading}
+          >
+            {isEnrolling ? "Enrolling..." : "Enroll Course"}
+          </button>
+        </div>
+      )}
+
+      {isStudent && isEnrolled && (
+        <div className="login-required-card">
+          <div>
+            <p className="small-heading">ENROLLED</p>
+            <h2>You are enrolled in this course.</h2>
+            <p>You can now track lessons and attempt quizzes.</p>
+
+            {enrollmentMessage && (
+              <p className="status-text left-status-text">
+                {enrollmentMessage}
+              </p>
+            )}
+          </div>
+
+          <Link to="/dashboard/courses" className="course-link login-required-link">
+            My Courses
           </Link>
         </div>
       )}
@@ -216,6 +340,18 @@ function CourseDetailsPage() {
             <p className="status-text left-status-text">{progressMessage}</p>
           )}
 
+          {!isAuthenticated && (
+            <p className="status-text left-status-text">
+              Login first to save progress.
+            </p>
+          )}
+
+          {isStudent && !isEnrolled && (
+            <p className="status-text left-status-text">
+              Enroll first to unlock progress tracking.
+            </p>
+          )}
+
           {progressPercentage === 100 && totalLessons > 0 && (
             <p className="completion-message">
               Excellent! You have completed this course.
@@ -230,6 +366,8 @@ function CourseDetailsPage() {
 
           {isAdmin ? (
             <p>Admin view: review topics and lessons without progress controls.</p>
+          ) : isStudent && !isEnrolled ? (
+            <p>Read lessons freely, but enroll first to save progress.</p>
           ) : (
             <p>Study lessons and mark them complete after reading.</p>
           )}
@@ -271,7 +409,7 @@ function CourseDetailsPage() {
                           !isAdmin && completedLessonIds.includes(lesson.id)
                         }
                         isDisabled={!canTrackProgress}
-                        disabledLabel={isAdmin ? "Admin View" : "Login Required"}
+                        disabledLabel={disabledLabel}
                         onToggleComplete={toggleLessonCompletion}
                       />
                     ))
@@ -300,7 +438,7 @@ function CourseDetailsPage() {
                   lessonNumber={index + 1}
                   isCompleted={!isAdmin && completedLessonIds.includes(lesson.id)}
                   isDisabled={!canTrackProgress}
-                  disabledLabel={isAdmin ? "Admin View" : "Login Required"}
+                  disabledLabel={disabledLabel}
                   onToggleComplete={toggleLessonCompletion}
                 />
               ))}
@@ -309,8 +447,29 @@ function CourseDetailsPage() {
         </div>
       </div>
 
-            <StudentQuizSection courseId={course.id} />
-            
+      {isStudent && !isEnrolled ? (
+        <div className="login-required-card">
+          <div>
+            <p className="small-heading">QUIZ LOCKED</p>
+            <h2>Enroll to attempt quizzes.</h2>
+            <p>
+              Quiz attempts and scores are available only after enrolling in this
+              course.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            className="course-link login-required-link"
+            onClick={handleEnrollCourse}
+            disabled={isEnrolling || isEnrollmentLoading}
+          >
+            {isEnrolling ? "Enrolling..." : "Enroll Course"}
+          </button>
+        </div>
+      ) : (
+        <StudentQuizSection courseId={course.id} />
+      )}
     </section>
   );
 }
