@@ -58,6 +58,8 @@ function Navbar() {
 
     <SidebarLink to="/dashboard/quizzes" icon="📝" label="Quiz Results" />
 
+      <SidebarLink to="/dashboard/certificates" icon="🏆" label="Certificates" />
+
     <SidebarLink to="/courses" icon="▶️" label="Browse Courses" />
   </div>
 )}
@@ -73,6 +75,8 @@ function Navbar() {
     <SidebarLink to="/admin/curriculum" icon="🧩" label="Curriculum" />
 
     <SidebarLink to="/admin/quizzes" icon="🧠" label="Quiz Builder" />
+
+    <SidebarLink to="/admin/certificates" icon="🏆" label="Certificates"/>
 
     <SidebarLink to="/admin/library" icon="🗂️" label="Course Library" />
   </div>

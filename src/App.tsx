@@ -22,6 +22,9 @@ import NotFoundPage from "./pages/NotFoundPage";
 import RegisterPage from "./pages/RegisterPage";
 import StudentCoursesPage from "./pages/StudentCoursesPage";
 import StudentQuizResultsPage from "./pages/StudentQuizResultsPage";
+import AdminCertificatesPage from "./pages/AdminCertificatesPage";
+import StudentCertificatePage from "./pages/StudentCertificatePage";
+import StudentCertificatesPage from "./pages/StudentCertificatesPage";
 
 function App() {
   return (
@@ -46,6 +49,8 @@ function App() {
               path="/dashboard/quizzes"
               element={<StudentQuizResultsPage />}
             />
+            <Route path="/dashboard/certificates" element={<StudentCertificatesPage />} />
+            <Route path="/certificates/courses/:courseId" element={<StudentCertificatePage />} />
           </Route>
 
           <Route element={<AdminRoute />}>
@@ -56,6 +61,7 @@ function App() {
               element={<AdminCurriculumPage />}
             />
             <Route path="/admin/quizzes" element={<AdminQuizzesPage />} />
+            <Route path="/admin/certificates" element={<AdminCertificatesPage />} />
             <Route path="/admin/library" element={<AdminLibraryPage />} />
           </Route>
 
