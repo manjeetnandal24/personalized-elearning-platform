@@ -16,6 +16,7 @@ const emptyCourseForm: CourseFormPayload = {
   description: "",
   shortName: "",
   level: "",
+  category: "General",
   instructor: "",
 };
 
@@ -66,6 +67,7 @@ function AdminCoursesPage() {
       description: course.description,
       shortName: course.shortName,
       level: course.level,
+      category: course.category || "General",
       instructor: course.instructor,
     });
 
@@ -97,6 +99,7 @@ function AdminCoursesPage() {
         setMessage("Course updated successfully.");
       } else {
         const newCourse = await createAdminCourse(courseForm, token);
+
         setCourses((currentCourses) => [newCourse, ...currentCourses]);
         setMessage("Course created successfully.");
       }
@@ -113,7 +116,7 @@ function AdminCoursesPage() {
     if (!token) return;
 
     const confirmed = window.confirm(
-      `Delete "${course.title}" and all its lessons/quizzes? This cannot be undone.`,
+      `Delete "${course.title}" and all its lessons, quizzes, certificates and progress? This cannot be undone.`,
     );
 
     if (!confirmed) return;
@@ -146,7 +149,7 @@ function AdminCoursesPage() {
         <div>
           <p className="small-heading">COURSE MANAGEMENT</p>
           <h1>Courses</h1>
-          <p>Create, edit and delete courses from one clean page.</p>
+          <p>Create, edit and delete courses with level and category details.</p>
         </div>
       </div>
 
@@ -214,6 +217,21 @@ function AdminCoursesPage() {
           </label>
 
           <label>
+            Category
+            <input
+              type="text"
+              value={courseForm.category}
+              onChange={(event) =>
+                setCourseForm({
+                  ...courseForm,
+                  category: event.target.value,
+                })
+              }
+              placeholder="Example: Web Development"
+            />
+          </label>
+
+          <label>
             Instructor
             <input
               type="text"
@@ -250,48 +268,55 @@ function AdminCoursesPage() {
           <p>Edit or delete existing courses.</p>
         </div>
 
-        <div className="admin-course-management-list">
-          {courses.map((course) => (
-            <article className="admin-course-management-card" key={course.id}>
-              <div className="admin-course-card-top">
-                <div className="course-icon">{course.shortName}</div>
+        {courses.length === 0 && !isLoading ? (
+          <div className="empty-dashboard-card">
+            <h2>No courses available</h2>
+            <p>Create your first course using the form above.</p>
+          </div>
+        ) : (
+          <div className="admin-course-management-list">
+            {courses.map((course) => (
+              <article className="admin-course-management-card" key={course.id}>
+                <div className="admin-course-card-top">
+                  <div className="course-icon">{course.shortName}</div>
 
-                <div>
-                  <h3>{course.title}</h3>
-                  <p>
-                    {course.level} • {course.lessons.length} lessons •{" "}
-                    {course.topics.length} topics • Instructor:{" "}
-                    {course.instructor}
-                  </p>
+                  <div>
+                    <h3>{course.title}</h3>
+                    <p>
+                      {course.level} • {course.category || "General"} •{" "}
+                      {course.lessons.length} lessons • {course.topics.length}{" "}
+                      topics • Instructor: {course.instructor}
+                    </p>
+                  </div>
                 </div>
-              </div>
 
-              <p className="admin-course-description">{course.description}</p>
+                <p className="admin-course-description">{course.description}</p>
 
-              <div className="admin-action-row">
-                <Link to={`/courses/${course.id}`} className="secondary-button">
-                  View
-                </Link>
+                <div className="admin-action-row">
+                  <Link to={`/courses/${course.id}`} className="secondary-button">
+                    View
+                  </Link>
 
-                <button
-                  type="button"
-                  className="secondary-button"
-                  onClick={() => startEditingCourse(course)}
-                >
-                  Edit Course
-                </button>
+                  <button
+                    type="button"
+                    className="secondary-button"
+                    onClick={() => startEditingCourse(course)}
+                  >
+                    Edit Course
+                  </button>
 
-                <button
-                  type="button"
-                  className="danger-button"
-                  onClick={() => handleDeleteCourse(course)}
-                >
-                  Delete Course
-                </button>
-              </div>
-            </article>
-          ))}
-        </div>
+                  <button
+                    type="button"
+                    className="danger-button"
+                    onClick={() => handleDeleteCourse(course)}
+                  >
+                    Delete Course
+                  </button>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

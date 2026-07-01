@@ -28,6 +28,7 @@ export type Course = {
   description: string;
   shortName: string;
   level: string;
+  category: string;
   instructor: string;
   lessons: Lesson[];
   topics: Topic[];
