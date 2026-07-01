@@ -25,6 +25,7 @@ import StudentQuizResultsPage from "./pages/StudentQuizResultsPage";
 import AdminCertificatesPage from "./pages/AdminCertificatesPage";
 import StudentCertificatePage from "./pages/StudentCertificatePage";
 import StudentCertificatesPage from "./pages/StudentCertificatesPage";
+import AdminAnalyticsPage from "./pages/AdminAnalyticsPage";
 
 function App() {
   return (
@@ -62,6 +63,7 @@ function App() {
             />
             <Route path="/admin/quizzes" element={<AdminQuizzesPage />} />
             <Route path="/admin/certificates" element={<AdminCertificatesPage />} />
+            <Route path="/admin/analytics" element={<AdminAnalyticsPage />} />
             <Route path="/admin/library" element={<AdminLibraryPage />} />
           </Route>
 

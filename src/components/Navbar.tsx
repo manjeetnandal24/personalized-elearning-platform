@@ -78,6 +78,8 @@ function Navbar() {
 
     <SidebarLink to="/admin/certificates" icon="🏆" label="Certificates"/>
 
+    <SidebarLink to="/admin/analytics" icon="📈" label="Analytics"/>
+
     <SidebarLink to="/admin/library" icon="🗂️" label="Course Library" />
   </div>
 )}

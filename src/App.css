@@ -2583,3 +2583,79 @@ html {
     text-align: center !important;
   }
 }
+
+.admin-highlights-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 18px;
+  margin-top: 28px;
+}
+
+.admin-highlight-card {
+  padding: 22px;
+  border: 1px solid #dbeafe;
+  border-radius: 18px;
+  background-color: #ffffff;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.05);
+}
+
+.admin-highlight-card h3 {
+  margin: 8px 0;
+  color: #0f172a;
+}
+
+.admin-highlight-card p {
+  margin: 0;
+  color: #64748b;
+}
+
+.analytics-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.analytics-table {
+  width: 100%;
+  min-width: 1000px;
+  border-collapse: collapse;
+}
+
+.analytics-table th,
+.analytics-table td {
+  padding: 14px;
+  border-bottom: 1px solid #e2e8f0;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.analytics-table th {
+  color: #475569;
+  font-size: 13px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background-color: #f8fafc;
+}
+
+.analytics-table td {
+  color: #334155;
+  font-weight: 700;
+}
+
+.analytics-course-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 220px;
+}
+
+.analytics-course-cell strong {
+  display: block;
+  color: #0f172a;
+}
+
+.analytics-course-cell p {
+  margin: 4px 0 0;
+  color: #64748b;
+  font-size: 13px;
+}
