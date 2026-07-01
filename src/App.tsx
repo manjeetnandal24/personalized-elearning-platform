@@ -26,6 +26,7 @@ import AdminCertificatesPage from "./pages/AdminCertificatesPage";
 import StudentCertificatePage from "./pages/StudentCertificatePage";
 import StudentCertificatesPage from "./pages/StudentCertificatesPage";
 import AdminAnalyticsPage from "./pages/AdminAnalyticsPage";
+import StudentProfilePage from "./pages/StudentProfilePage";
 
 function App() {
   return (
@@ -51,6 +52,7 @@ function App() {
               element={<StudentQuizResultsPage />}
             />
             <Route path="/dashboard/certificates" element={<StudentCertificatesPage />} />
+            <Route path="/dashboard/profile" element={<StudentProfilePage />} />
             <Route path="/certificates/courses/:courseId" element={<StudentCertificatePage />} />
           </Route>
 

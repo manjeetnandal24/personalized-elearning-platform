@@ -60,6 +60,8 @@ function Navbar() {
 
       <SidebarLink to="/dashboard/certificates" icon="🏆" label="Certificates" />
 
+      <SidebarLink to="/dashboard/profile" icon="👤" label="Profile" />
+
     <SidebarLink to="/courses" icon="▶️" label="Browse Courses" />
   </div>
 )}
