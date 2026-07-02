@@ -1,4 +1,4 @@
-export type UserRole = "STUDENT" | "ADMIN";
+export type UserRole = "STUDENT" | "INSTRUCTOR" | "ADMIN";
 
 export type User = {
   id: number;
@@ -6,6 +6,7 @@ export type User = {
   email: string;
   role: UserRole;
   createdAt: string;
+  updatedAt?: string;
 };
 
 export type AuthData = {

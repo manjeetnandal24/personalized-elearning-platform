@@ -48,6 +48,25 @@ function Navbar() {
           <SidebarLink to="/courses" icon="📚" label="Courses" />
         </div>
 
+        {user?.role === "INSTRUCTOR" && (
+  <>
+    <div className="sidebar-section">
+      <p>Instructor</p>
+
+      <SidebarLink to="/instructor" icon="🏠" label="Overview" />
+      <SidebarLink to="/instructor/courses" icon="📚" label="My Courses" />
+      <SidebarLink
+        to="/instructor/curriculum"
+        icon="🧩"
+        label="Curriculum"
+      />
+      <SidebarLink to="/instructor/quizzes" icon="📝" label="Quizzes" />
+      <SidebarLink to="/instructor/students" icon="👥" label="Students" />
+      <SidebarLink to="/instructor/analytics" icon="📊" label="Analytics" />
+    </div>
+  </>
+)}
+
     {isAuthenticated && !isAdmin && (
   <div className="sidebar-group">
     <p className="sidebar-group-title">LEARNING</p>
@@ -87,6 +106,8 @@ function Navbar() {
     <SidebarLink to="/admin/library" icon="🗂️" label="Course Library" />
   </div>
 )}
+
+
       </nav>
 
       <div className="sidebar-footer">

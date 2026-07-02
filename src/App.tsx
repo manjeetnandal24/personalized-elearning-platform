@@ -29,6 +29,9 @@ import AdminAnalyticsPage from "./pages/AdminAnalyticsPage";
 import StudentProfilePage from "./pages/StudentProfilePage";
 import AdminStudentsPage from "./pages/AdminStudentsPage";
 import AiAssistant from "./components/AiAssistant";
+import InstructorRoute from "./components/InstructorRoute";
+import InstructorPage from "./pages/InstructorPage";
+import InstructorCoursesPage from "./pages/InstructorCoursesPage";
 
 function App() {
   return (
@@ -45,6 +48,11 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
           </Route>
+
+<Route element={<InstructorRoute />}>
+  <Route path="/instructor" element={<InstructorPage />} />
+</Route>
+
 
           <Route element={<StudentRoute />}>
             <Route path="/dashboard" element={<DashboardPage />} />
@@ -71,6 +79,11 @@ function App() {
             <Route path="/admin/analytics" element={<AdminAnalyticsPage />} />
             <Route path="/admin/library" element={<AdminLibraryPage />} />
           </Route>
+
+          <Route element={<InstructorRoute />}>
+  <Route path="/instructor" element={<InstructorPage />} />
+  <Route path="/instructor/courses" element={<InstructorCoursesPage />} />
+</Route>
 
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
