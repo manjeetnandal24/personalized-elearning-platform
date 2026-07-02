@@ -2869,3 +2869,230 @@ html {
   border-color: #2563eb;
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
+
+.student-management-toolbar {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+  margin: 28px 0;
+  padding: 22px;
+  border: 1px solid #dbeafe;
+  border-radius: 20px;
+  background-color: #ffffff;
+  box-shadow: 0 14px 35px rgba(15, 23, 42, 0.05);
+}
+
+.student-management-toolbar label {
+  display: grid;
+  gap: 8px;
+  width: min(460px, 100%);
+  color: #334155;
+  font-weight: 800;
+}
+
+.student-management-toolbar input {
+  width: 100%;
+  min-height: 46px;
+  padding: 12px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  color: #0f172a;
+  font: inherit;
+}
+
+.student-management-toolbar input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.student-management-toolbar p {
+  margin: 0;
+  color: #64748b;
+  font-weight: 800;
+}
+
+.admin-student-list {
+  display: grid;
+  gap: 18px;
+}
+
+.admin-student-card {
+  padding: 24px;
+  border: 1px solid #dbeafe;
+  border-radius: 22px;
+  background-color: #ffffff;
+  box-shadow: 0 14px 35px rgba(15, 23, 42, 0.06);
+}
+
+.admin-student-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.admin-student-identity {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.small-student-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  font-size: 26px;
+}
+
+.admin-student-identity h2 {
+  margin: 0 0 6px;
+  color: #0f172a;
+}
+
+.admin-student-identity p {
+  margin: 0 0 4px;
+  color: #64748b;
+}
+
+.admin-student-identity small {
+  color: #94a3b8;
+  font-weight: 800;
+}
+
+.admin-student-badge {
+  padding: 8px 12px;
+  border-radius: 999px;
+  background-color: #eff6ff;
+  color: #1d4ed8;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.student-mini-stats {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.student-mini-stats div {
+  padding: 14px;
+  border-radius: 16px;
+  background-color: #f8fafc;
+}
+
+.student-mini-stats p {
+  margin: 0 0 6px;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.student-mini-stats strong {
+  color: #0f172a;
+  font-size: 22px;
+}
+
+.student-details-panel {
+  margin-top: 18px;
+  border-radius: 16px;
+  background-color: #f8fafc;
+}
+
+.student-details-panel summary {
+  padding: 16px;
+  color: #0f172a;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.student-course-progress-list {
+  display: grid;
+  gap: 14px;
+  padding: 0 16px 16px;
+}
+
+.student-course-progress-card {
+  padding: 18px;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  background-color: #ffffff;
+}
+
+.student-course-progress-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.student-course-progress-top h3 {
+  margin: 0 0 6px;
+  color: #0f172a;
+}
+
+.student-course-progress-top p {
+  margin: 0;
+  color: #64748b;
+}
+
+.student-course-progress-info {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 14px 0 8px;
+  color: #475569;
+  font-weight: 800;
+}
+
+.student-course-progress-info p {
+  margin: 0;
+}
+
+.student-course-link {
+  width: fit-content;
+  margin-top: 14px;
+}
+
+.student-certificate-list {
+  display: grid;
+  gap: 12px;
+  padding: 0 16px 16px;
+}
+
+.student-certificate-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 14px;
+  background-color: white;
+}
+
+.student-certificate-row strong {
+  color: #0f172a;
+}
+
+.student-certificate-row p {
+  margin: 4px 0 0;
+  color: #64748b;
+}
+
+@media (max-width: 1000px) {
+  .student-mini-stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 650px) {
+  .student-management-toolbar,
+  .admin-student-header,
+  .admin-student-identity {
+    display: grid;
+  }
+
+  .student-mini-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

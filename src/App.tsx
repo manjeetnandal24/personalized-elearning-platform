@@ -27,6 +27,7 @@ import StudentCertificatePage from "./pages/StudentCertificatePage";
 import StudentCertificatesPage from "./pages/StudentCertificatesPage";
 import AdminAnalyticsPage from "./pages/AdminAnalyticsPage";
 import StudentProfilePage from "./pages/StudentProfilePage";
+import AdminStudentsPage from "./pages/AdminStudentsPage";
 
 function App() {
   return (
@@ -58,6 +59,7 @@ function App() {
 
           <Route element={<AdminRoute />}>
             <Route path="/admin" element={<AdminPage />} />
+            <Route path="/admin/students" element={<AdminStudentsPage />} />
             <Route path="/admin/courses" element={<AdminCoursesPage />} />
             <Route
               path="/admin/curriculum"
