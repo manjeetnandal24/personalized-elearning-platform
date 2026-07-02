@@ -28,6 +28,7 @@ import StudentCertificatesPage from "./pages/StudentCertificatesPage";
 import AdminAnalyticsPage from "./pages/AdminAnalyticsPage";
 import StudentProfilePage from "./pages/StudentProfilePage";
 import AdminStudentsPage from "./pages/AdminStudentsPage";
+import AiAssistant from "./components/AiAssistant";
 
 function App() {
   return (
@@ -76,6 +77,7 @@ function App() {
       </main>
 
       <Footer />
+      <AiAssistant />
     </div>
   );
 }
