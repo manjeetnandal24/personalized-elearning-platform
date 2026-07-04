@@ -32,6 +32,7 @@ import AiAssistant from "./components/AiAssistant";
 import InstructorRoute from "./components/InstructorRoute";
 import InstructorPage from "./pages/InstructorPage";
 import InstructorCoursesPage from "./pages/InstructorCoursesPage";
+import InstructorCurriculumPage from "./pages/InstructorCurriculumPage";
 
 function App() {
   return (
@@ -81,9 +82,10 @@ function App() {
           </Route>
 
           <Route element={<InstructorRoute />}>
-  <Route path="/instructor" element={<InstructorPage />} />
-  <Route path="/instructor/courses" element={<InstructorCoursesPage />} />
-</Route>
+          <Route path="/instructor" element={<InstructorPage />} />
+          <Route path="/instructor/courses" element={<InstructorCoursesPage />} />
+          <Route path="/instructor/curriculum" element={<InstructorCurriculumPage />} />
+          </Route>
 
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

@@ -3695,3 +3695,383 @@ html {
   flex-wrap: wrap;
   gap: 10px;
 }
+
+.student-management-toolbar select,
+.instructor-curriculum-form select {
+  width: 100%;
+  min-height: 46px;
+  padding: 12px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  color: #0f172a;
+  font: inherit;
+  background-color: #ffffff;
+}
+
+.instructor-curriculum-layout {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 22px;
+  align-items: start;
+}
+
+.instructor-form-stack {
+  display: grid;
+  gap: 18px;
+}
+
+.instructor-curriculum-form {
+  display: grid;
+  gap: 14px;
+  padding: 22px;
+  border: 1px solid #dbeafe;
+  border-radius: 22px;
+  background-color: #ffffff;
+  box-shadow: 0 14px 35px rgba(15, 23, 42, 0.06);
+}
+
+.instructor-curriculum-form h2 {
+  margin: 4px 0 0;
+  color: #0f172a;
+}
+
+.instructor-curriculum-form label {
+  display: grid;
+  gap: 8px;
+  color: #334155;
+  font-weight: 800;
+}
+
+.instructor-curriculum-form input,
+.instructor-curriculum-form textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  color: #0f172a;
+  font: inherit;
+}
+
+.instructor-curriculum-form textarea {
+  resize: vertical;
+}
+
+.instructor-curriculum-form input:focus,
+.instructor-curriculum-form textarea:focus,
+.instructor-curriculum-form select:focus,
+.student-management-toolbar select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.instructor-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.instructor-curriculum-preview {
+  min-width: 0;
+}
+
+.curriculum-topic-list {
+  display: grid;
+  gap: 16px;
+}
+
+.curriculum-topic-card {
+  padding: 20px;
+  border: 1px solid #dbeafe;
+  border-radius: 22px;
+  background-color: #ffffff;
+  box-shadow: 0 14px 35px rgba(15, 23, 42, 0.06);
+}
+
+.curriculum-topic-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.curriculum-topic-header h3 {
+  margin: 0 0 6px;
+  color: #0f172a;
+}
+
+.curriculum-topic-header p {
+  margin: 0;
+  color: #64748b;
+  line-height: 1.6;
+}
+
+.curriculum-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: start;
+}
+
+.curriculum-actions button {
+  padding: 8px 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  background-color: #ffffff;
+  color: #334155;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.curriculum-actions button:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+}
+
+.curriculum-lesson-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.curriculum-lesson-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px;
+  border-radius: 14px;
+  background-color: #f8fafc;
+}
+
+.curriculum-lesson-row strong {
+  color: #0f172a;
+}
+
+.curriculum-lesson-row p {
+  margin: 4px 0 0;
+  color: #64748b;
+}
+
+@media (max-width: 1000px) {
+  .instructor-curriculum-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 650px) {
+  .curriculum-topic-header,
+  .curriculum-lesson-row {
+    display: grid;
+  }
+}
+
+/* Instructor Curriculum Final Polish */
+
+.instructor-curriculum-layout {
+  display: grid;
+  grid-template-columns: minmax(320px, 380px) 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.instructor-form-stack {
+  position: sticky;
+  top: 24px;
+  display: grid;
+  gap: 18px;
+}
+
+.instructor-curriculum-form {
+  padding: 24px;
+  border: 1px solid #bfdbfe;
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at top right, rgba(37, 99, 235, 0.06), transparent 32%),
+    #ffffff;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+}
+
+.instructor-curriculum-form h2 {
+  margin: 6px 0 8px;
+  color: #020617;
+  font-size: 24px;
+  letter-spacing: -0.03em;
+}
+
+.instructor-curriculum-form label {
+  gap: 9px;
+  color: #0f172a;
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.instructor-curriculum-form input,
+.instructor-curriculum-form textarea,
+.instructor-curriculum-form select,
+.student-management-toolbar select {
+  border: 1px solid #cbd5e1;
+  border-radius: 14px;
+  background-color: #ffffff;
+  color: #0f172a;
+  font-size: 15px;
+  font-weight: 650;
+}
+
+.instructor-curriculum-form input::placeholder,
+.instructor-curriculum-form textarea::placeholder {
+  color: #94a3b8;
+  font-weight: 650;
+}
+
+.instructor-curriculum-form textarea {
+  min-height: 92px;
+}
+
+.instructor-form-actions .primary-button,
+.instructor-form-actions .secondary-button {
+  min-height: 46px;
+  border-radius: 12px;
+}
+
+.instructor-curriculum-preview {
+  padding: 0;
+  min-width: 0;
+}
+
+.instructor-curriculum-preview .section-heading-row {
+  margin-bottom: 18px;
+}
+
+.instructor-curriculum-preview .section-heading-row h2 {
+  font-size: 26px;
+  letter-spacing: -0.03em;
+}
+
+.curriculum-topic-list {
+  display: grid;
+  gap: 18px;
+}
+
+.curriculum-topic-card {
+  padding: 22px;
+  border: 1px solid #bfdbfe;
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at top right, rgba(37, 99, 235, 0.05), transparent 34%),
+    #ffffff;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.08);
+}
+
+.curriculum-topic-header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 18px;
+  padding-bottom: 16px;
+}
+
+.curriculum-topic-header h3 {
+  margin: 0 0 8px;
+  color: #020617;
+  font-size: 20px;
+  letter-spacing: -0.02em;
+}
+
+.curriculum-topic-header p {
+  margin: 0;
+  color: #64748b;
+  line-height: 1.6;
+}
+
+.curriculum-lesson-list {
+  display: grid;
+  gap: 12px;
+  margin-top: 0;
+}
+
+.curriculum-lesson-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 18px;
+  padding: 16px 18px;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  background-color: #f8fafc;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.curriculum-lesson-row:hover {
+  transform: translateY(-2px);
+  border-color: #93c5fd;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+}
+
+.curriculum-lesson-row strong {
+  display: block;
+  margin-bottom: 4px;
+  color: #0f172a;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.curriculum-lesson-row p {
+  margin: 0;
+  color: #64748b;
+  line-height: 1.45;
+}
+
+.curriculum-actions {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 8px;
+}
+
+.curriculum-actions button {
+  min-width: 70px;
+  padding: 9px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  background-color: #ffffff;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.curriculum-actions button:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+  background-color: #eff6ff;
+}
+
+.curriculum-actions button:last-child:hover {
+  border-color: #dc2626;
+  color: #dc2626;
+  background-color: #fef2f2;
+}
+
+@media (max-width: 1100px) {
+  .instructor-curriculum-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .instructor-form-stack {
+    position: static;
+  }
+}
+
+@media (max-width: 650px) {
+  .curriculum-topic-header,
+  .curriculum-lesson-row {
+    grid-template-columns: 1fr;
+  }
+
+  .curriculum-actions {
+    flex-wrap: wrap;
+  }
+}
