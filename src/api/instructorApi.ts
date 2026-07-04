@@ -264,3 +264,69 @@ export async function deleteInstructorLesson(token: string, lessonId: number) {
 
   return data;
 }
+
+export type InstructorStudentCertificate = {
+  id: number;
+  userId: number;
+  courseId: number;
+  certificateCode: string;
+  issuedAt: string;
+};
+
+export type InstructorCourseStudent = {
+  id: number;
+  name: string;
+  email: string;
+  joinedAt: string;
+  enrolledAt: string;
+  completedLessons: number;
+  totalLessons: number;
+  progressPercentage: number;
+  quizAttempts: number;
+  passedQuizAttempts: number;
+  averageQuizScore: number;
+  certificateEarned: boolean;
+  certificate?: InstructorStudentCertificate;
+};
+
+export type InstructorStudentCourseGroup = {
+  courseId: number;
+  courseTitle: string;
+  courseShortName: string;
+  courseLevel: string;
+  courseCategory: string;
+  totalLessons: number;
+  students: InstructorCourseStudent[];
+};
+
+export type InstructorStudentsStats = {
+  assignedCourses: number;
+  uniqueStudents: number;
+  totalEnrollments: number;
+  quizAttempts: number;
+  certificates: number;
+  averageProgress: number;
+};
+
+export type InstructorStudentsOverview = {
+  stats: InstructorStudentsStats;
+  courses: InstructorStudentCourseGroup[];
+};
+
+export async function fetchInstructorStudents(
+  token: string,
+): Promise<InstructorStudentsOverview> {
+  const response = await fetch(`${API_BASE_URL}/instructor/students`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Unable to load instructor students.");
+  }
+
+  return data.data;
+}

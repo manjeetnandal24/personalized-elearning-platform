@@ -4075,3 +4075,130 @@ html {
     flex-wrap: wrap;
   }
 }
+
+.instructor-student-course-list {
+  display: grid;
+  gap: 22px;
+}
+
+.instructor-student-course-card {
+  padding: 24px;
+  border: 1px solid #bfdbfe;
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at top right, rgba(37, 99, 235, 0.05), transparent 34%),
+    #ffffff;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.08);
+}
+
+.instructor-student-course-header {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.instructor-student-course-header h2 {
+  margin: 8px 0 6px;
+  color: #0f172a;
+}
+
+.instructor-student-course-header p {
+  margin: 0;
+  color: #64748b;
+}
+
+.instructor-student-list {
+  display: grid;
+  gap: 14px;
+}
+
+.instructor-student-card {
+  display: grid;
+  gap: 16px;
+  padding: 18px;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  background-color: #f8fafc;
+}
+
+.instructor-student-main {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.instructor-student-main h3 {
+  margin: 0 0 4px;
+  color: #0f172a;
+}
+
+.instructor-student-main p {
+  margin: 0 0 4px;
+  color: #64748b;
+}
+
+.instructor-student-main small {
+  color: #94a3b8;
+  font-weight: 800;
+}
+
+.instructor-student-metrics {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.instructor-student-metrics div {
+  padding: 12px;
+  border-radius: 14px;
+  background-color: #ffffff;
+}
+
+.instructor-student-metrics p {
+  margin: 0 0 5px;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.instructor-student-metrics strong {
+  color: #0f172a;
+  font-size: 18px;
+}
+
+.instructor-certificate-note {
+  width: fit-content;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background-color: #fffbeb;
+  color: #92400e;
+  font-weight: 800;
+}
+
+@media (max-width: 1000px) {
+  .instructor-student-metrics {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .instructor-student-course-header {
+    grid-template-columns: auto 1fr;
+  }
+
+  .instructor-student-course-header .secondary-button {
+    grid-column: 1 / -1;
+    width: fit-content;
+  }
+}
+
+@media (max-width: 650px) {
+  .instructor-student-course-header,
+  .instructor-student-main {
+    display: grid;
+  }
+
+  .instructor-student-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
