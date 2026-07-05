@@ -330,3 +330,241 @@ export async function fetchInstructorStudents(
 
   return data.data;
 }
+
+export type InstructorQuizTopic = {
+  id: number;
+  title: string;
+  courseId?: number;
+};
+
+export type InstructorQuizQuestion = {
+  id: number;
+  question: string;
+  optionA: string;
+  optionB: string;
+  optionC: string;
+  optionD: string;
+  correctOption: string;
+  explanation: string;
+  points: number;
+  position: number;
+  quizId: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type InstructorQuizAttempt = {
+  id: number;
+  score: number;
+  passed: boolean;
+};
+
+export type InstructorQuiz = {
+  id: number;
+  title: string;
+  description: string;
+  passingScore: number;
+  courseId: number;
+  topicId: number | null;
+  topic: InstructorQuizTopic | null;
+  questions: InstructorQuizQuestion[];
+  attempts: InstructorQuizAttempt[];
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type InstructorQuizCourse = {
+  id: number;
+  shortName: string;
+  title: string;
+  description: string;
+  level: string;
+  category: string;
+  instructor: string;
+  instructorId: number | null;
+  createdAt: string;
+  updatedAt: string;
+  topics: InstructorQuizTopic[];
+  quizzes: InstructorQuiz[];
+};
+
+export async function fetchInstructorQuizzes(
+  token: string,
+): Promise<InstructorQuizCourse[]> {
+  const response = await fetch(`${API_BASE_URL}/instructor/quizzes`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Unable to load instructor quizzes.");
+  }
+
+  return data.data.courses;
+}
+
+export async function createInstructorQuiz(
+  token: string,
+  payload: {
+    courseId: number;
+    topicId: number | null;
+    title: string;
+    description: string;
+    passingScore: number;
+  },
+) {
+  const response = await fetch(`${API_BASE_URL}/instructor/quizzes`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Unable to create quiz.");
+  }
+
+  return data.data.quiz;
+}
+
+export async function updateInstructorQuiz(
+  token: string,
+  quizId: number,
+  payload: {
+    topicId: number | null;
+    title: string;
+    description: string;
+    passingScore: number;
+  },
+) {
+  const response = await fetch(`${API_BASE_URL}/instructor/quizzes/${quizId}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Unable to update quiz.");
+  }
+
+  return data.data.quiz;
+}
+
+export async function deleteInstructorQuiz(token: string, quizId: number) {
+  const response = await fetch(`${API_BASE_URL}/instructor/quizzes/${quizId}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Unable to delete quiz.");
+  }
+
+  return data;
+}
+
+export async function createInstructorQuizQuestion(
+  token: string,
+  payload: {
+    quizId: number;
+    question: string;
+    optionA: string;
+    optionB: string;
+    optionC: string;
+    optionD: string;
+    correctOption: string;
+    explanation: string;
+    points: number;
+  },
+) {
+  const response = await fetch(`${API_BASE_URL}/instructor/quiz-questions`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Unable to create question.");
+  }
+
+  return data.data.question;
+}
+
+export async function updateInstructorQuizQuestion(
+  token: string,
+  questionId: number,
+  payload: {
+    question: string;
+    optionA: string;
+    optionB: string;
+    optionC: string;
+    optionD: string;
+    correctOption: string;
+    explanation: string;
+    points: number;
+  },
+) {
+  const response = await fetch(
+    `${API_BASE_URL}/instructor/quiz-questions/${questionId}`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(payload),
+    },
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Unable to update question.");
+  }
+
+  return data.data.question;
+}
+
+export async function deleteInstructorQuizQuestion(
+  token: string,
+  questionId: number,
+) {
+  const response = await fetch(
+    `${API_BASE_URL}/instructor/quiz-questions/${questionId}`,
+    {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Unable to delete question.");
+  }
+
+  return data;
+}

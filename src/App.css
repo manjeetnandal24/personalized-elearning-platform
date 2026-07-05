@@ -4202,3 +4202,15 @@ html {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+.quiz-question-row {
+  align-items: start;
+}
+
+.quiz-question-row p {
+  margin-top: 6px;
+}
+
+.quiz-question-row strong strong {
+  color: #2563eb;
+}

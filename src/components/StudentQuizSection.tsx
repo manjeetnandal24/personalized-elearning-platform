@@ -237,14 +237,15 @@ function StudentQuizSection({ courseId }: StudentQuizSectionProps) {
 
                 {canAttemptQuiz && quiz.questions.length > 0 && (
                   <div className="quiz-question-list">
-                    {quiz.questions.map((question) => {
+
+                   {quiz.questions.map((question, questionIndex) => {
                       const chosenOption =
                         selectedAnswers[quiz.id]?.[question.id] || "";
 
                       return (
                         <div className="quiz-question-card" key={question.id}>
                           <h4>
-                            {question.position}. {question.question}
+                           {questionIndex + 1}. {question.question}
                           </h4>
 
                           <div className="quiz-options">

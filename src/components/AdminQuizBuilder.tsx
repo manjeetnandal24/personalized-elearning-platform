@@ -410,10 +410,10 @@ function AdminQuizBuilder({ courses }: AdminQuizBuilderProps) {
 
                 {quiz.questions.length > 0 && (
                   <div className="admin-question-list">
-                    {quiz.questions.map((question) => (
+                    {quiz.questions.map((question, questionIndex) => (
                       <div className="admin-question-row" key={question.id}>
                         <strong>
-                          {question.position}. {question.question}
+                          Q{questionIndex + 1}. {question.question}
                         </strong>
                         <p>
                           Correct Option: <b>{question.correctOption}</b>
