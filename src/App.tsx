@@ -35,6 +35,7 @@ import InstructorCoursesPage from "./pages/InstructorCoursesPage";
 import InstructorCurriculumPage from "./pages/InstructorCurriculumPage";
 import InstructorStudentsPage from "./pages/InstructorStudentsPage";
 import InstructorQuizzesPage from "./pages/InstructorQuizzesPage";
+import InstructorAnalyticsPage from "./pages/InstructorAnalyticsPage";
 
 function App() {
   return (
@@ -89,6 +90,7 @@ function App() {
           <Route path="/instructor/curriculum" element={<InstructorCurriculumPage />} />
           <Route path="/instructor/quizzes" element={<InstructorQuizzesPage />} />
           <Route path="/instructor/students" element={<InstructorStudentsPage />} />
+          <Route path="/instructor/analytics" element={<InstructorAnalyticsPage />} />
           </Route>
 
           <Route path="*" element={<NotFoundPage />} />

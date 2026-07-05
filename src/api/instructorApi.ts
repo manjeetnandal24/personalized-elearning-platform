@@ -568,3 +568,56 @@ export async function deleteInstructorQuizQuestion(
 
   return data;
 }
+
+export type InstructorCourseAnalytics = {
+  courseId: number;
+  courseTitle: string;
+  courseShortName: string;
+  courseLevel: string;
+  courseCategory: string;
+  studentsCount: number;
+  lessonsCount: number;
+  quizzesCount: number;
+  quizAttemptsCount: number;
+  averageQuizScore: number;
+  passRate: number;
+  averageProgress: number;
+  certificatesCount: number;
+};
+
+export type InstructorAnalyticsStats = {
+  assignedCourses: number;
+  uniqueStudents: number;
+  totalEnrollments: number;
+  totalLessons: number;
+  quizAttempts: number;
+  averageQuizScore: number;
+  passRate: number;
+  averageProgress: number;
+  certificates: number;
+};
+
+export type InstructorAnalyticsOverview = {
+  stats: InstructorAnalyticsStats;
+  courseAnalytics: InstructorCourseAnalytics[];
+  topProgressCourses: InstructorCourseAnalytics[];
+  topQuizCourses: InstructorCourseAnalytics[];
+};
+
+export async function fetchInstructorAnalytics(
+  token: string,
+): Promise<InstructorAnalyticsOverview> {
+  const response = await fetch(`${API_BASE_URL}/instructor/analytics`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Unable to load instructor analytics.");
+  }
+
+  return data.data;
+}
