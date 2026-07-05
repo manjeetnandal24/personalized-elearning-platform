@@ -54,8 +54,20 @@ function RegisterPage() {
         password,
       });
 
-      login(authData);
-      navigate("/dashboard");
+     login(authData);
+
+     
+
+const redirectPath =
+  authData.user.role === "ADMIN"
+    ? "/admin"
+    : authData.user.role === "INSTRUCTOR"
+      ? "/instructor"
+      : "/dashboard";
+
+navigate(redirectPath, { replace: true });
+
+
     } catch (error) {
       setErrorMessage(
         error instanceof Error ? error.message : "Registration failed.",

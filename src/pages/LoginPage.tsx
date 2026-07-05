@@ -44,8 +44,19 @@ function LoginPage() {
       });
 
       login(authData);
-      const fallbackPath = authData.user.role === "ADMIN" ? "/admin" : "/dashboard";
-      navigate(requestedPath || fallbackPath);
+
+
+      const fallbackPath =
+  authData.user.role === "ADMIN"
+    ? "/admin"
+    : authData.user.role === "INSTRUCTOR"
+      ? "/instructor"
+      : "/dashboard";
+
+navigate(requestedPath || fallbackPath, { replace: true });
+
+
+
     } catch (error) {
       setErrorMessage(
         error instanceof Error ? error.message : "Login failed.",

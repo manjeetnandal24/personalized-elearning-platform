@@ -26,6 +26,8 @@ function Navbar() {
   const { user, isAuthenticated, logout } = useAuth();
 
   const isAdmin = user?.role === "ADMIN";
+  const isInstructor = user?.role === "INSTRUCTOR";
+  const isStudent = user?.role === "STUDENT";
 
   return (
     <aside className="sidebar">
@@ -48,7 +50,7 @@ function Navbar() {
           <SidebarLink to="/courses" icon="📚" label="Courses" />
         </div>
 
-        {user?.role === "INSTRUCTOR" && (
+       {isAuthenticated && isInstructor &&  (
   <>
     <div className="sidebar-section">
       <p>Instructor</p>
@@ -67,7 +69,7 @@ function Navbar() {
   </>
 )}
 
-    {isAuthenticated && !isAdmin && (
+   {isAuthenticated && isStudent && (
   <div className="sidebar-group">
     <p className="sidebar-group-title">LEARNING</p>
 
