@@ -95,6 +95,8 @@ function Navbar() {
 
     <SidebarLink to="/admin/students" icon="👥" label="Students" />
 
+    <SidebarLink to="/admin/instructors" icon="🧑‍🏫" label="Instructors" />
+
     <SidebarLink to="/admin/courses" icon="📘" label="Courses" />
 
     <SidebarLink to="/admin/curriculum" icon="🧩" label="Curriculum" />
