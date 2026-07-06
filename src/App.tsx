@@ -37,6 +37,7 @@ import InstructorStudentsPage from "./pages/InstructorStudentsPage";
 import InstructorQuizzesPage from "./pages/InstructorQuizzesPage";
 import InstructorAnalyticsPage from "./pages/InstructorAnalyticsPage";
 import AdminInstructorsPage from "./pages/AdminInstructorsPage";
+import AnnouncementsPage from "./pages/AnnouncementsPage";
 
 function App() {
   return (
@@ -95,6 +96,12 @@ function App() {
           <Route path="/instructor/analytics" element={<InstructorAnalyticsPage />} />
           </Route>
 
+
+
+          <Route path="/announcements" element={<AnnouncementsPage />} />
+
+
+          
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>

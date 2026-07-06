@@ -56,6 +56,7 @@ function Navbar() {
       <p>Instructor</p>
 
       <SidebarLink to="/instructor" icon="🏠" label="Overview" />
+      <SidebarLink to="/announcements" icon="📢" label="Announcements" />
       <SidebarLink to="/instructor/courses" icon="📚" label="My Courses" />
       <SidebarLink
         to="/instructor/curriculum"
@@ -75,6 +76,8 @@ function Navbar() {
 
     <SidebarLink to="/dashboard" icon="📊" label="Overview" />
 
+    <SidebarLink to="/announcements" icon="📢" label="Announcements" />
+
     <SidebarLink to="/dashboard/courses" icon="🎯" label="My Courses" />
 
     <SidebarLink to="/dashboard/quizzes" icon="📝" label="Quiz Results" />
@@ -92,6 +95,8 @@ function Navbar() {
     <p className="sidebar-group-title">ADMIN MANAGEMENT</p>
 
     <SidebarLink to="/admin" icon="📌" label="Overview" />
+
+    <SidebarLink to="/announcements" icon="📢" label="Announcements" />
 
     <SidebarLink to="/admin/students" icon="👥" label="Students" />
 
