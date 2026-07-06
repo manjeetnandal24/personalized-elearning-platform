@@ -38,6 +38,7 @@ import InstructorQuizzesPage from "./pages/InstructorQuizzesPage";
 import InstructorAnalyticsPage from "./pages/InstructorAnalyticsPage";
 import AdminInstructorsPage from "./pages/AdminInstructorsPage";
 import AnnouncementsPage from "./pages/AnnouncementsPage";
+import CourseResourcesPage from "./pages/CourseResourcesPage";
 
 function App() {
   return (
@@ -100,8 +101,12 @@ function App() {
 
           <Route path="/announcements" element={<AnnouncementsPage />} />
 
+          <Route path="/resources" element={<CourseResourcesPage />} />
 
           
+
+
+
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>

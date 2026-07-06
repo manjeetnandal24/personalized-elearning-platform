@@ -4606,3 +4606,158 @@ html {
     display: grid;
   }
 }
+
+
+.resource-form-card {
+  display: grid;
+  gap: 16px;
+  margin-top: 28px;
+  padding: 24px;
+  border: 1px solid #bfdbfe;
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at top right, rgba(37, 99, 235, 0.05), transparent 34%),
+    #ffffff;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.08);
+}
+
+.resource-form-card h2 {
+  margin: 4px 0 0;
+  color: #0f172a;
+}
+
+.resource-form-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.7fr 1.2fr;
+  gap: 16px;
+}
+
+.resource-form-card label {
+  display: grid;
+  gap: 8px;
+  color: #334155;
+  font-weight: 900;
+}
+
+.resource-form-card input,
+.resource-form-card select,
+.resource-form-card textarea,
+.student-management-toolbar select {
+  width: 100%;
+  min-height: 46px;
+  padding: 12px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 14px;
+  color: #0f172a;
+  background-color: #ffffff;
+  font: inherit;
+}
+
+.resource-form-card textarea {
+  resize: vertical;
+}
+
+.resource-form-card input:focus,
+.resource-form-card select:focus,
+.resource-form-card textarea:focus,
+.student-management-toolbar select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.resource-course-list {
+  display: grid;
+  gap: 20px;
+}
+
+.resource-course-card {
+  padding: 24px;
+  border: 1px solid #bfdbfe;
+  border-radius: 26px;
+  background-color: #ffffff;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.08);
+}
+
+.resource-course-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.resource-course-header h2 {
+  margin: 8px 0 4px;
+  color: #0f172a;
+}
+
+.resource-course-header span {
+  color: #64748b;
+  font-weight: 800;
+}
+
+.resource-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.resource-card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at top right, rgba(37, 99, 235, 0.04), transparent 36%),
+    #ffffff;
+}
+
+.resource-icon {
+  display: grid;
+  width: 52px;
+  height: 52px;
+  place-items: center;
+  border-radius: 16px;
+  background-color: #eff6ff;
+  font-size: 24px;
+}
+
+.resource-card-content h3 {
+  margin: 8px 0;
+  color: #0f172a;
+}
+
+.resource-card-content p {
+  margin: 0 0 12px;
+  color: #64748b;
+  line-height: 1.6;
+}
+
+.resource-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.resource-actions .primary-button,
+.resource-actions .secondary-button,
+.resource-actions .danger-outline-button {
+  min-height: 40px;
+  padding: 9px 14px;
+  text-decoration: none;
+}
+
+@media (max-width: 950px) {
+  .resource-form-grid,
+  .resource-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .resource-card {
+    grid-template-columns: 1fr;
+  }
+}
