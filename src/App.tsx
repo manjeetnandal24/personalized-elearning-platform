@@ -39,6 +39,7 @@ import InstructorAnalyticsPage from "./pages/InstructorAnalyticsPage";
 import AdminInstructorsPage from "./pages/AdminInstructorsPage";
 import AnnouncementsPage from "./pages/AnnouncementsPage";
 import CourseResourcesPage from "./pages/CourseResourcesPage";
+import CourseDiscussionsPage from "./pages/CourseDiscussionsPage";
 
 function App() {
   return (
@@ -102,6 +103,8 @@ function App() {
           <Route path="/announcements" element={<AnnouncementsPage />} />
 
           <Route path="/resources" element={<CourseResourcesPage />} />
+
+          <Route path="/discussions" element={<CourseDiscussionsPage />} />
 
           
 
