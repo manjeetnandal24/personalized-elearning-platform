@@ -4944,3 +4944,171 @@ html {
     display: grid;
   }
 }
+
+.support-form-card {
+  display: grid;
+  gap: 16px;
+  margin-top: 28px;
+  padding: 24px;
+  border: 1px solid #bfdbfe;
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at top right, rgba(37, 99, 235, 0.05), transparent 34%),
+    #ffffff;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.08);
+}
+
+.support-form-card h2 {
+  margin: 4px 0 0;
+  color: #0f172a;
+}
+
+.support-form-grid {
+  display: grid;
+  grid-template-columns: 0.8fr 0.7fr 1.5fr;
+  gap: 16px;
+}
+
+.support-form-card label {
+  display: grid;
+  gap: 8px;
+  color: #334155;
+  font-weight: 900;
+}
+
+.support-form-card input,
+.support-form-card select,
+.support-form-card textarea,
+.support-admin-actions select {
+  width: 100%;
+  min-height: 46px;
+  padding: 12px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 14px;
+  color: #0f172a;
+  background-color: #ffffff;
+  font: inherit;
+}
+
+.support-form-card textarea {
+  resize: vertical;
+}
+
+.support-form-card input:focus,
+.support-form-card select:focus,
+.support-form-card textarea:focus,
+.support-admin-actions select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.support-ticket-list {
+  display: grid;
+  gap: 18px;
+}
+
+.support-ticket-card {
+  padding: 24px;
+  border: 1px solid #bfdbfe;
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at top right, rgba(37, 99, 235, 0.04), transparent 36%),
+    #ffffff;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.08);
+}
+
+.support-ticket-header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.support-ticket-header h2 {
+  margin: 10px 0 0;
+  color: #0f172a;
+}
+
+.support-pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.support-status-pill,
+.support-priority-pill {
+  width: fit-content;
+  margin: 0;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.support-status-pill.open {
+  background-color: #fff7ed;
+  color: #c2410c;
+}
+
+.support-status-pill.in_progress {
+  background-color: #eff6ff;
+  color: #1d4ed8;
+}
+
+.support-status-pill.resolved {
+  background-color: #dcfce7;
+  color: #15803d;
+}
+
+.support-status-pill.closed {
+  background-color: #f1f5f9;
+  color: #475569;
+}
+
+.support-priority-pill.low {
+  background-color: #f0fdf4;
+  color: #16a34a;
+}
+
+.support-priority-pill.medium {
+  background-color: #fefce8;
+  color: #a16207;
+}
+
+.support-priority-pill.high {
+  background-color: #fff1f2;
+  color: #dc2626;
+}
+
+.support-message {
+  margin: 16px 0;
+  color: #475569;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+.support-admin-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.support-admin-actions select {
+  min-width: 160px;
+}
+
+.support-admin-actions .danger-outline-button {
+  min-height: 46px;
+}
+
+@media (max-width: 950px) {
+  .support-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .support-ticket-header,
+  .support-admin-actions {
+    display: grid;
+  }
+}

@@ -68,6 +68,7 @@ function Navbar() {
       <SidebarLink to="/instructor/quizzes" icon="📝" label="Quizzes" />
       <SidebarLink to="/instructor/students" icon="👥" label="Students" />
       <SidebarLink to="/instructor/analytics" icon="📊" label="Analytics" />
+      <SidebarLink to="/support" icon="🎧" label="Support" />
     </div>
   </>
 )}
@@ -93,6 +94,8 @@ function Navbar() {
       <SidebarLink to="/dashboard/profile" icon="👤" label="Profile" />
 
     <SidebarLink to="/courses" icon="▶️" label="Browse Courses" />
+
+    <SidebarLink to="/support" icon="🎧" label="Support" />
   </div>
 )}
 
@@ -123,6 +126,8 @@ function Navbar() {
     <SidebarLink to="/admin/analytics" icon="📈" label="Analytics"/>
 
     <SidebarLink to="/admin/library" icon="🗂️" label="Course Library" />
+
+    <SidebarLink to="/support" icon="🎧" label="Support" />
   </div>
 )}
 
