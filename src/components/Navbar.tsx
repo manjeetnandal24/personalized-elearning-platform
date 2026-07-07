@@ -125,6 +125,8 @@ function Navbar() {
 
     <SidebarLink to="/admin/analytics" icon="📈" label="Analytics"/>
 
+    <SidebarLink to="/admin/activity-logs" icon="🧾" label="Activity Logs" />
+
     <SidebarLink to="/admin/library" icon="🗂️" label="Course Library" />
 
     <SidebarLink to="/support" icon="🎧" label="Support" />
