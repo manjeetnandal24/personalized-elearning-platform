@@ -5471,3 +5471,81 @@ html {
     font-size: 38px;
   }
 }
+
+.password-reset-panel::before {
+  content: "🔐 Reset your password";
+}
+
+.reset-password-form {
+  display: grid;
+  gap: 12px;
+  width: 100%;
+  margin-top: 10px;
+  text-align: left;
+}
+
+.reset-password-form label {
+  color: #334155;
+  font-weight: 900;
+}
+
+.reset-password-form input {
+  width: 100%;
+  min-height: 46px;
+  padding: 12px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 14px;
+  color: #0f172a;
+  background-color: #ffffff;
+  font: inherit;
+}
+
+.reset-password-form input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.forgot-password-link {
+  margin: 8px 0 14px;
+  text-align: right;
+}
+
+.forgot-password-link a {
+  color: #2563eb;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.forgot-password-link a:hover {
+  text-decoration: underline;
+}
+
+.reset-password-form .checkbox-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  margin: 6px 0 12px;
+  color: #334155;
+  font-size: 15px;
+  font-weight: 800;
+  text-align: left;
+}
+
+.reset-password-form .checkbox-row input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  min-height: auto;
+  padding: 0;
+  margin: 0;
+  accent-color: #2563eb;
+  box-shadow: none;
+}
+
+.reset-password-form .checkbox-row span {
+  color: #334155;
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.2;
+}

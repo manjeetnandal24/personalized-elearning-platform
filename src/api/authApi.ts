@@ -41,6 +41,19 @@ type ResendVerificationResponse = {
   };
 };
 
+type ForgotPasswordResponse = {
+  success: boolean;
+  message: string;
+  data: {
+    resetLink: string | null;
+  };
+};
+
+type ResetPasswordResponse = {
+  success: boolean;
+  message: string;
+};
+
 async function getErrorMessage(response: Response) {
   try {
     const data: { message?: string } = await response.json();
@@ -123,6 +136,43 @@ export async function resendVerificationEmail(
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ email }),
+  });
+
+  if (!response.ok) {
+    throw new Error(await getErrorMessage(response));
+  }
+
+  return response.json();
+}
+
+export async function forgotPassword(
+  email: string,
+): Promise<ForgotPasswordResponse> {
+  const response = await fetch(`${API_BASE_URL}/auth/forgot-password`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email }),
+  });
+
+  if (!response.ok) {
+    throw new Error(await getErrorMessage(response));
+  }
+
+  return response.json();
+}
+
+export async function resetPassword(
+  token: string,
+  password: string,
+): Promise<ResetPasswordResponse> {
+  const response = await fetch(`${API_BASE_URL}/auth/reset-password/${token}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ password }),
   });
 
   if (!response.ok) {

@@ -186,6 +186,10 @@ function LoginPage() {
 
             <span>Show password</span>
           </label>
+          
+          <p className="forgot-password-link">
+  <Link to="/forgot-password">Forgot password?</Link>
+</p>
 
           <button
             type="submit"
