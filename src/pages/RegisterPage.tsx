@@ -1,13 +1,9 @@
 import { useState, type FormEvent } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import { registerUser } from "../api/authApi";
-import { useAuth } from "../context/AuthContext";
 
 function RegisterPage() {
-  const navigate = useNavigate();
-  const { login } = useAuth();
-
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -15,12 +11,16 @@ function RegisterPage() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [verificationLink, setVerificationLink] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     setErrorMessage("");
+    setSuccessMessage("");
+    setVerificationLink("");
 
     const cleanName = name.trim();
     const cleanEmail = email.trim().toLowerCase();
@@ -48,26 +48,22 @@ function RegisterPage() {
     try {
       setIsSubmitting(true);
 
-      const authData = await registerUser({
+      const registerData = await registerUser({
         name: cleanName,
         email: cleanEmail,
         password,
       });
 
-     login(authData);
+      setSuccessMessage(
+        "Account created successfully. Please verify your email before login.",
+      );
 
-     
+      setVerificationLink(registerData.verificationLink);
 
-const redirectPath =
-  authData.user.role === "ADMIN"
-    ? "/admin"
-    : authData.user.role === "INSTRUCTOR"
-      ? "/instructor"
-      : "/dashboard";
-
-navigate(redirectPath, { replace: true });
-
-
+      setName("");
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
     } catch (error) {
       setErrorMessage(
         error instanceof Error ? error.message : "Registration failed.",
@@ -86,6 +82,34 @@ navigate(redirectPath, { replace: true });
 
         {errorMessage && (
           <div className="form-message error-message">{errorMessage}</div>
+        )}
+
+        {successMessage && (
+          <div className="form-message success-message">{successMessage}</div>
+        )}
+
+             {verificationLink && (
+               <div className="verification-panel">
+            <p>
+              Demo verification link generated. Open this link to verify your
+              account:
+            </p>
+
+            <a href={verificationLink} target="_blank" rel="noreferrer">
+              Verify Email
+            </a>
+
+            <input
+              type="text"
+              value={verificationLink}
+              readOnly
+              onFocus={(event) => event.target.select()}
+            />
+
+            <p>
+              After verification, go to <Link to="/login">Login</Link>.
+            </p>
+          </div>
         )}
 
         <form onSubmit={handleSubmit}>
