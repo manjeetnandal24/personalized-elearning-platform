@@ -34,8 +34,10 @@ function CourseDetailsPage() {
   const [enrollmentMessage, setEnrollmentMessage] = useState("");
 
   const isAdmin = user?.role === "ADMIN";
-  const isStudent = isAuthenticated && !isAdmin;
-  const canTrackProgress = isStudent && isEnrolled;
+  const isInstructor = user?.role === "INSTRUCTOR";
+  const isStudent = user?.role === "STUDENT";
+  const canPreviewAsStaff = isAuthenticated && (isAdmin || isInstructor);
+  const canTrackProgress = isAuthenticated && isStudent && isEnrolled;
 
   useEffect(() => {
     async function loadCourseDetails() {
@@ -60,7 +62,7 @@ function CourseDetailsPage() {
 
   useEffect(() => {
     async function loadEnrollmentStatus() {
-      if (!course || !isStudent || !token) {
+      if (!course || !isAuthenticated || !isStudent || !token) {
         setIsEnrolled(false);
         return;
       }
@@ -79,7 +81,7 @@ function CourseDetailsPage() {
     }
 
     loadEnrollmentStatus();
-  }, [course, isStudent, token]);
+  }, [course, isAuthenticated, isStudent, token]);
 
   useEffect(() => {
     async function loadSavedProgress() {
@@ -105,7 +107,7 @@ function CourseDetailsPage() {
   }, [course, canTrackProgress, token]);
 
   async function handleEnrollCourse() {
-    if (!course || !token) {
+    if (!course || !token || !isStudent) {
       return;
     }
 
@@ -130,6 +132,11 @@ function CourseDetailsPage() {
   }
 
   async function toggleLessonCompletion(lessonId: number) {
+    if (!isStudent) {
+      setProgressMessage("Progress tracking is only available for students.");
+      return;
+    }
+
     if (!canTrackProgress || !token) {
       setProgressMessage("Please enroll in this course first.");
       return;
@@ -187,8 +194,8 @@ function CourseDetailsPage() {
       ? 0
       : Math.round((completedLessons / totalLessons) * 100);
 
-  const disabledLabel = isAdmin
-    ? "Admin View"
+  const disabledLabel = canPreviewAsStaff
+    ? "Staff View"
     : !isAuthenticated
       ? "Login Required"
       : !isEnrolled
@@ -209,6 +216,8 @@ function CourseDetailsPage() {
               <span>{totalLessons} lessons</span>
 
               {isStudent && isEnrolled && <span>Enrolled</span>}
+              {isInstructor && <span>Instructor View</span>}
+              {isAdmin && <span>Admin View</span>}
             </div>
 
             <h1>{course.title}</h1>
@@ -222,19 +231,28 @@ function CourseDetailsPage() {
         </div>
       </div>
 
-      {isAdmin && (
+      {canPreviewAsStaff && (
         <div className="login-required-card">
           <div>
-            <p className="small-heading">ADMIN VIEW</p>
-            <h2>Progress tracking is hidden for admin accounts.</h2>
+            <p className="small-heading">
+              {isAdmin ? "ADMIN VIEW" : "INSTRUCTOR VIEW"}
+            </p>
+            <h2>
+              You are viewing this course as{" "}
+              {isAdmin ? "Admin" : "Instructor"}.
+            </h2>
             <p>
-              You can review the course content here. To add courses, topics or
-              lessons, use the Admin Panel.
+              Enrollment, progress tracking, quiz attempts and certificates are
+              only for student accounts. Staff accounts can preview course
+              content here.
             </p>
           </div>
 
-          <Link to="/admin" className="course-link login-required-link">
-            Admin Panel
+          <Link
+            to={isAdmin ? "/admin" : "/instructor"}
+            className="course-link login-required-link"
+          >
+            {isAdmin ? "Admin Panel" : "Instructor Panel"}
           </Link>
         </div>
       )}
@@ -256,7 +274,7 @@ function CourseDetailsPage() {
         </div>
       )}
 
-      {isStudent && !isEnrolled && (
+      {isAuthenticated && isStudent && !isEnrolled && (
         <div className="login-required-card">
           <div>
             <p className="small-heading">ENROLLMENT REQUIRED</p>
@@ -290,7 +308,7 @@ function CourseDetailsPage() {
         </div>
       )}
 
-      {isStudent && isEnrolled && (
+      {isAuthenticated && isStudent && isEnrolled && (
         <div className="login-required-card">
           <div>
             <p className="small-heading">ENROLLED</p>
@@ -310,7 +328,7 @@ function CourseDetailsPage() {
         </div>
       )}
 
-      {!isAdmin && (
+      {isStudent && (
         <div className="course-progress-card">
           <div className="progress-heading-row">
             <div>
@@ -346,7 +364,7 @@ function CourseDetailsPage() {
             </p>
           )}
 
-          {isStudent && !isEnrolled && (
+          {isAuthenticated && isStudent && !isEnrolled && (
             <p className="status-text left-status-text">
               Enroll first to unlock progress tracking.
             </p>
@@ -364,8 +382,13 @@ function CourseDetailsPage() {
         <div className="lessons-heading">
           <h2>Course Curriculum</h2>
 
-          {isAdmin ? (
-            <p>Admin view: review topics and lessons without progress controls.</p>
+          {canPreviewAsStaff ? (
+            <p>
+              Preview course lessons. Student progress tracking is disabled for
+              staff accounts.
+            </p>
+          ) : !isAuthenticated ? (
+            <p>Login first to save lesson progress and attempt quizzes.</p>
           ) : isStudent && !isEnrolled ? (
             <p>Read lessons freely, but enroll first to save progress.</p>
           ) : (
@@ -406,7 +429,7 @@ function CourseDetailsPage() {
                         lesson={lesson}
                         lessonNumber={index + 1}
                         isCompleted={
-                          !isAdmin && completedLessonIds.includes(lesson.id)
+                          isStudent && completedLessonIds.includes(lesson.id)
                         }
                         isDisabled={!canTrackProgress}
                         disabledLabel={disabledLabel}
@@ -436,7 +459,9 @@ function CourseDetailsPage() {
                   key={lesson.id}
                   lesson={lesson}
                   lessonNumber={index + 1}
-                  isCompleted={!isAdmin && completedLessonIds.includes(lesson.id)}
+                  isCompleted={
+                    isStudent && completedLessonIds.includes(lesson.id)
+                  }
                   isDisabled={!canTrackProgress}
                   disabledLabel={disabledLabel}
                   onToggleComplete={toggleLessonCompletion}
@@ -447,7 +472,44 @@ function CourseDetailsPage() {
         </div>
       </div>
 
-      {isStudent && !isEnrolled ? (
+      {!isAuthenticated && (
+        <div className="login-required-card">
+          <div>
+            <p className="small-heading">QUIZ LOGIN REQUIRED</p>
+            <h2>Login to attempt quizzes.</h2>
+            <p>
+              Quiz attempts and scores are available only after logging in as a
+              student.
+            </p>
+          </div>
+
+          <Link to="/login" className="course-link login-required-link">
+            Login
+          </Link>
+        </div>
+      )}
+
+      {canPreviewAsStaff && (
+        <div className="login-required-card">
+          <div>
+            <p className="small-heading">QUIZ PREVIEW DISABLED</p>
+            <h2>Quiz attempts are only for students.</h2>
+            <p>
+              Staff accounts can manage quizzes from their dashboard, but cannot
+              attempt student quizzes from this course page.
+            </p>
+          </div>
+
+          <Link
+            to={isAdmin ? "/admin/quizzes" : "/instructor/quizzes"}
+            className="course-link login-required-link"
+          >
+            Manage Quizzes
+          </Link>
+        </div>
+      )}
+
+      {isAuthenticated && isStudent && !isEnrolled && (
         <div className="login-required-card">
           <div>
             <p className="small-heading">QUIZ LOCKED</p>
@@ -467,7 +529,9 @@ function CourseDetailsPage() {
             {isEnrolling ? "Enrolling..." : "Enroll Course"}
           </button>
         </div>
-      ) : (
+      )}
+
+      {isAuthenticated && isStudent && isEnrolled && (
         <StudentQuizSection courseId={course.id} />
       )}
     </section>
